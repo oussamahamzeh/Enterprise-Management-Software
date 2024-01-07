@@ -19,7 +19,7 @@ TO-DO:
 inf. Optimize the code. Especially the HTML.
 
 1. Throw an error when the inventory quantity is below zero.
-2. Prevent Wholesale from opening without login like the other pages.
+#DONE# Prevent Wholesale from opening without login like the other pages.
 3. Change the background of the cashier and wholesale to the ones in the image folder. Find other images for the other pages.
 4. Fix the rebuy list.
 5. Delete the log files. Stop uploading them to the commits.

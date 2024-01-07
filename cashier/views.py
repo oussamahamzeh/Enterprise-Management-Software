@@ -288,6 +288,7 @@ def cashier(request):
     return render(request, 'cashier.html')
 
 
+@login_required
 def wholesale(request):
     # Handle item code search and item details fetching here
     return render(request, 'wholesale.html')
@@ -526,7 +527,6 @@ def wholesale_receipt(transactions):
 
         # worksheet.row_dimensions[row_num].auto_size = True
         total_sum = total_sum + (float(transaction.selling_price) * int(transaction.quantity))
-
 
     total_sum = round(total_sum, 2)
     final_row = len(transactions) + 9 + added_rows
