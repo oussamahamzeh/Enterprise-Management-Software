@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="jumbotron text-center">
+    <h1>Welcome to Financials</h1>
+    <p>View and manage financial transactions.</p>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card mb-4 box-shadow">
+          <div class="card-body">
+            <h2 class="card-title">Transaction List</h2>
+            <p class="card-text">View and manage financial transactions.</p>
+            <a href="{% url 'financials:transaction_list' %}" class="btn btn-primary">Go to Transaction List</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card mb-4 box-shadow">
+          <div class="card-body">
+            <h2 class="card-title">Balance Sheet</h2>
+            <p class="card-text">View your balance sheet.</p>
+            <a href="{% url 'financials:balance_sheet' %}" class="btn btn-primary">Go to Balance Sheet</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% load custom_filters %}
+
+{% block content %}
+  <div class="jumbotron text-center">
+    <h1>Rebuy List</h1>
+    <p>Items that need to be rebought.</p>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <table class="table table-dark table-striped">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Current Quantity</th>
+              <th>Rebuy Till Quantity</th>
+              <th>Quantity to Rebuy</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in items %}
+              {% if item.quantity < item.rebuy_till %}
+                <tr>
+                  <td>{{ item.name }}</td>
+                  <td>{{ item.quantity }}</td>
+                  <td>{{ item.rebuy_till }}</td>
+                  <td>{{ item.rebuy_till|subtract:item.quantity }}</td>
+                </tr>
+              {% endif %}
+            {% empty %}
+              <tr>
+                <td colspan="4">No items need to be rebought.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+<button onclick="goBack()" class="btn btn-secondary">Back</button>
+
+<script>
+function goBack() {
+  window.history.back();
+}
+</script>
+
+{% endblock %}
+
+<style>
+  th {
+    font-weight: bold;
+    text-align: center;
+  }
+
+  td {
+    text-align: center;
+  }
+</style>

@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+  <h1 class="mb-4">Transactions</h1>
+
+  <form class="mb-5">
+    <div class="row mb-3">
+      <label for="from_date" class="col-sm-2 col-form-label">From Date:</label>
+      <div class="col-sm-4">
+        <input type="date" id="from_date" name="from_date" class="form-control" />
+      </div>
+      <label for="to_date" class="col-sm-2 col-form-label">To Date:</label>
+      <div class="col-sm-4">
+        <input type="date" id="to_date" name="to_date" class="form-control" />
+      </div>
+    </div>
+    <div class="row mb-3">
+      <label for="item" class="col-sm-2 col-form-label">Item:</label>
+      <div class="col-sm-4">
+        <select class="form-select" id="item" name="item">
+          <option value="">All</option>
+          {% for item in items %}
+            <option value="{{ item.pk }}">{{ item.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <label for="client" class="col-sm-2 col-form-label">Client:</label>
+      <div class="col-sm-4">
+        <select class="form-select" id="client" name="client">
+          <option value="">All</option>
+          {% for client in clients %}
+            <option value="{{ client.name }}">{{ client.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <label for="user" class="col-sm-2 col-form-label">User:</label>
+      <div class="col-sm-4">
+        <select class="form-select" id="user" name="user">
+          <option value="">All</option>
+          {% for user in users %}
+            <option value="{{ user }}">{{ user }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <label for="type" class="col-sm-2 col-form-label">Type:</label>
+      <div class="col-sm-4">
+        <select class="form-select" id="type" name="type">
+          <option value="">All</option>
+          {% for type in types %}
+            <option value="{{ type }}">{{ type }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-sm-12">
+        <button type="submit" class="btn btn-primary">Filter</button>
+      </div>
+    </div>
+  </form>
+  {% include 'transaction_table.html' %}
+
+    <script>
+      const exportBtn = document.getElementById('export-btn');
+      exportBtn.addEventListener('click', () => {
+        const rows = [];
+        const headers = ['Quantity', 'Selling Price', 'Time', 'Item', 'Client', 'User', 'Discount', 'Type', 'TVA'];
+
+        // Add the headers to the rows array
+        rows.push(headers.join(','));
+
+        // Loop through the transactions and add each row to the rows array
+        {% for transaction in transactions %}
+          const timeStr = new Date('{{ transaction.time|date:"Y-m-d H:i:s" }} UTC').toLocaleString();
+
+          const row = [
+            '{{ transaction.quantity }}',
+            '{{ transaction.selling_price }}',
+            timeStr,
+            '{{ transaction.item }}',
+            '{{ transaction.client }}',
+            '{{ transaction.user }}',
+            '{{ transaction.discount }}',
+            '{{ transaction.type }}',
+            '{{ transaction.TVA }}'
+          ];
+          rows.push(row.join(','));
+        {% endfor %}
+
+        // Use FileSaver.js to save the rows array as an Excel file
+        const csv = rows.join('\n');
+        const blob = new Blob([csv], { type: 'application/vnd.ms-excel' });
+        saveAs(blob, 'transactions.xls');
+
+        console.log('Transactions exported!');
+      });
+    </script>
+
+<button onclick="goBack()" class="btn btn-secondary">Back</button>
+
+<script>
+function goBack() {
+  window.history.back();
+}
+</script>
+
+  {% endblock %}

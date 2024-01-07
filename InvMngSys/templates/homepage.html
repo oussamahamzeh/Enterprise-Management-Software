@@ -1,0 +1,95 @@
+{% load static %}
+<html>
+<head>
+    <title>ITEMS</title>
+    <script type="text/javascript" src="{% static 'jquery-3.3.1.min.js' %}"></script>
+    <script type="text/javascript" charset="utf8" src="{% static 'DataTables/datatables.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'DataTables/datatables.css' %}" />
+    <script type="text/javascript" charset="utf8" src="{% static 'js/bootstrap.min.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}" />
+    <link rel="icon" href="{% static 'logo2.ico' %}">
+    <style>
+        body {
+            background-image: url('{% get_media_prefix %}images/homepage_background.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center center;
+            color: white; /* Set text color to white */
+        }
+    </style>
+</head>
+<body>
+
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+    <div class="jumbotron text-center">
+        <h1 class="display-3">Welcome to the Inventory Management System!</h1>
+        <p class="lead">This is the homepage, where you can access the different parts of the system.</p>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card mb-4 box-shadow">
+                    <div class="card-body">
+                        <h2 class="card-title">Cashier</h2>
+                        <p class="card-text">Scan items and create transactions.</p>
+                        <a href="{% url 'cashier:cashier' %}" class="btn btn-primary">Go to Cashier</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card mb-4 box-shadow">
+                    <div class="card-body">
+                        <h2 class="card-title">Inventory</h2>
+                        <p class="card-text">View and manage inventory items.</p>
+                        <a href="{% url 'inventory:item_list' %}" class="btn btn-primary">Go to Inventory</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card mb-4 box-shadow">
+                    <div class="card-body">
+                        <h2 class="card-title">Wholesale</h2>
+                        <p class="card-text">Create bulk purchase deals.</p>
+                        <a href="{% url 'cashier:wholesale' %}" class="btn btn-primary">Go to Wholesale</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card mb-4 box-shadow">
+                    <div class="card-body">
+                        <h2 class="card-title">Financials</h2>
+                        <p class="card-text">View and manage financial transactions.</p>
+                        <a href="{% url 'financials:financials' %}" class="btn btn-primary">Go to Financials</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card mb-4 box-shadow">
+                    <div class="card-body">
+                        <h2 class="card-title">Documents</h2>
+                        <p class="card-text">Upload and manage documents.</p>
+                        <a href="{% url 'documents:page' %}" class="btn btn-primary">Go to Documents</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card mb-4 box-shadow">
+                    <div class="card-body">
+                        <h2 class="card-title">Administration</h2>
+                        <p class="card-text">Access the admin panel.</p>
+                        <a href="{% url 'admin:index' %}" class="btn btn-primary">Go to Admin Panel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

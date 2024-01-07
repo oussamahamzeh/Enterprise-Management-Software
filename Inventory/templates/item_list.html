@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="text-center mb-5">All Items</h1>
+  <div>
+    <a href="{% url 'Inventory:rebuy_list' %}" class="btn btn-primary mr-2">Rebuy List</a>
+    <a href="{% url 'Inventory:item_create' %}" class="btn btn-success">Create</a>
+  </div>
+</div>
+<div class="table-responsive">
+  <table class="table">
+    <thead class="table-dark">
+      <tr>
+        <th>Name</th>
+        <th>Company</th>
+        <th>Category</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <th>Description</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr>
+        <td><a href="{% url 'Inventory:item_details' item.item_id %}" class="text-primary">{{ item.name }}</a></td>
+        <td>{{ item.company }}</td>
+        <td>{{ item.category }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.selling_price }}</td>
+        <td>{{ item.description }}</td>
+        <td>
+          <a href="{% url 'Inventory:item_edit' item.item_id %}" class="btn btn-primary btn-sm mr-2">Edit</a>
+          <form action="{% url 'Inventory:item_delete' item.item_id %}" method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this item?')">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+
+{% endblock %}

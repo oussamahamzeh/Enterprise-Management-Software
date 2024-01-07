@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Document List</h2>
+{% for document in documents %}
+    <a href="{{ document.file.url }}">{{ document.title }}</a><br>
+{% empty %}
+    No documents found.
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,251 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Search Item</title>
+    <style>
+        .item-details {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ccc;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Search for Items by Code</h1>
+<form method="POST" action="{% url 'cashier:wholesale_search_item' %}" id="search-form">
+    {% csrf_token %}
+    <label for="code">Enter Item Code:</label>
+    <br>
+    <input type="text" id="code" name="code" placeholder="Enter item code" autofocus>
+    <br>
+    <label for="quantity">Quantity:</label>
+    <input type="number" id="quantity" name="quantity" value="1">
+    <br>
+    <button type="submit">Search</button>
+    <button type="button" onclick="clearResults()">Clear</button>
+</form>
+
+<div id="search-results">
+    {% if results %}
+    <h2>Search Results:</h2>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Quantity</th>
+        </tr>
+        {% for result in results %}
+        <tr>
+            <td>{{ result.item.name }}</td>
+            <td><input type="number" value="{{ result.item.code|calculate_total_cost }}" class="edit-field" data-field="price" readonly></td>
+            <td><input type="number" value="{{ result.quantity }}" class="edit-field" data-field="quantity"></td>
+            <input type="hidden" value="{{ result.item.code }}" class="item-code">
+        </tr>
+        {% endfor %}
+        <!-- Add a row for discount and subtotal fields -->
+        <tr>
+            <td><strong>Margin (%):</strong></td>
+            <td><input type="number" id="margin" placeholder="Enter margin" min="0" value="0" onchange="updateFields()"></td>
+        </tr>
+        <tr>
+            <td><strong>Subtotal:</strong></td>
+            <td><input type="number" id="subtotal" placeholder="Enter subtotal" min="0" onchange="updateFields()"></td>
+        </tr>
+        <!-- Add a row for Cash-in field -->
+        <tr>
+            <td><strong>Cash-in:</strong></td>
+            <td><input type="number" id="cash-in" placeholder="Enter cash in" min="0" onchange="updateFields()"></td>
+        </tr>
+        <!-- Add a row for Cash-out field -->
+        <tr>
+            <td><strong>Cash-out:</strong></td>
+            <td><input type="number" id="cash-out" placeholder="Cash out" min="0" disabled></td>
+        </tr>
+        <!-- Add a row for total before Calculate Transaction button -->
+        <tr>
+
+            <td id="total-price" colspan="2"><span id="total"></span></td>
+        </tr>
+    </table>
+    {% endif %}
+</div>
+
+<script>
+    function clearResults() {
+        fetch('{% url 'cashier:clear_results' %}')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Clear the results UI here
+                    document.getElementById('search-results').innerHTML = '';
+                    document.getElementById('code').focus(); // Set focus back to input field
+                }
+            });
+    }
+
+    function calculateTotalPrice() {
+        const itemRows = document.querySelectorAll('#search-results table tr');
+        let total = 0;
+
+        itemRows.forEach(row => {
+            const quantityInput = row.querySelector('.edit-field[data-field="quantity"]');
+            const priceInput = row.querySelector('.edit-field[data-field="price"]');
+
+            const quantity = quantityInput ? parseFloat(quantityInput.value) : 0;
+            const price = priceInput ? parseFloat(priceInput.value) : 0;
+
+            total += quantity * price;
+        });
+
+        return total;
+    }
+    function updateFields() {
+        const marginInput = document.getElementById('margin');
+        const subtotalInput = document.getElementById('subtotal');
+        const cashInInput = document.getElementById('cash-in');
+        const cashOutInput = document.getElementById('cash-out');
+
+        let margin = marginInput ? parseFloat(marginInput.value) : 0;
+        const totalPrice = calculateTotalPrice();
+
+        const marginAmount = (margin / 100) * totalPrice;
+        const subtotal = totalPrice + marginAmount;
+
+        subtotalInput.value = subtotal.toFixed(2);
+
+        let cashIn = cashInInput ? parseFloat(cashInInput.value) : 0;
+
+        if (cashIn < 0) {
+            cashIn = 0;
+            cashInInput.value = 0;
+        }
+
+        const cashOut = cashIn - subtotal;
+        cashOutInput.value = cashOut.toFixed(2);
+
+        const totalRow = document.querySelector('#total-price');
+        totalRow.style.display = 'none';
+    }
+
+    // Call updateFields initially
+    updateFields();
+
+    document.getElementById('margin').addEventListener('input', updateFields);
+
+    document.getElementById('subtotal').addEventListener('input', function() {
+        const subtotalInput = document.getElementById('subtotal');
+        const marginInput = document.getElementById('margin');
+        const totalSpan = document.getElementById('total'); // Move totalSpan inside the event listener scope
+        totalSpan.style.display = 'none';
+        const subtotal = parseFloat(subtotalInput.value);
+        const totalPrice = calculateTotalPrice();
+
+        if (subtotal <= totalPrice) {
+            marginInput.value = '0';
+        } else {
+            const margin = (( subtotal - totalPrice) / totalPrice) * 100;
+            marginInput.value = margin.toFixed(2);
+        }
+
+        // Update total span
+        totalSpan.textContent = subtotal.toFixed(2);
+
+        // Trigger the updateFields function to recalculate other fields
+        updateFields();
+    });
+
+
+    // Add event listeners to quantity and price fields to update fields on input
+    document.querySelectorAll('.edit-field').forEach(input => {
+        input.addEventListener('input', updateFields);
+    });
+
+    function createTransactions() {
+        console.log('createTransactions function called'); // Check if the function is called
+
+        const transactions = [];
+        const itemRows = document.querySelectorAll('#search-results table tr');
+
+        itemRows.forEach(row => {
+            const codeInput = row.querySelector('.item-code');
+            const quantityInput = row.querySelector('.edit-field[data-field="quantity"]');
+            const priceInput = row.querySelector('.edit-field[data-field="price"]');
+
+            console.log('codeInput:', codeInput); // Check if codeInput is null or an element
+            console.log('quantityInput:', quantityInput); // Check if quantityInput is null or an element
+            console.log('priceInput:', priceInput); // Check if priceInput is null or an element
+
+            const code = codeInput ? codeInput.value : ''; // Safely access value property
+            const quantity = quantityInput ? quantityInput.value : ''; // Safely access value property
+            const price = priceInput ? priceInput.value : ''; // Safely access value property
+
+            transactions.push({
+                code: code,
+                quantity: quantity,
+                selling_price: price
+            });
+        });
+
+        // Get the margin and total price values
+        const marginInput = document.getElementById('margin');
+        const totalSpan = document.getElementById('total');
+        const margin = marginInput ? parseFloat(marginInput.value) : 0;
+        const totalPrice = totalSpan ? parseFloat(totalSpan.textContent) : 0;
+
+        // Include margin and total price in the JSON data
+        const requestData = {
+            transactions: transactions,
+            margin: margin,
+            total: totalPrice
+        };
+
+        fetch('{% url 'cashier:wholesale_create_transactions' %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}', // Include CSRF token directly
+            },
+            body: JSON.stringify(requestData), // Include margin and total price in the request
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Transactions created successfully, perform any necessary actions
+                console.log('Transactions created successfully');
+                document.getElementById('search-results').innerHTML = '';
+                document.getElementById('code').focus(); // Set focus back to input field
+            }
+        });
+    }
+
+    // Move the Create Transactions button inside the script tag
+    const createTransactionsButton = document.createElement('button');
+    createTransactionsButton.textContent = 'Create Transactions';
+    createTransactionsButton.type = 'button';
+    createTransactionsButton.onclick = createTransactions;
+
+    document.body.appendChild(createTransactionsButton);
+</script>
+
+</body>
+</html>
+{% endblock %}

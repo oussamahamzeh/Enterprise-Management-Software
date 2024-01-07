@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<center>
+<div class="card" style="width: 50rem;">
+<div class="card-body">
+<form action="{% url 'inventory:transferitm' item.item_id %}" method="post">
+<div class="card-header">TRANSFER {{ item.name }}</div>
+{% csrf_token %}
+<input type="hidden" name="item" value="{{ item.name }}">
+<div class="form-group">
+<label for="quantity">Quantity</label>
+<input type="number" class="form-control" value="1" id="quantity" name="quantity" min="1" max="{{ item.quantity }}" required/>
+</div>
+<div class="form-group">
+<label for="client">Client</label>
+<select name="client" class="form-control" id="client">
+{% for client in clients %}
+<option value="{{ client.name }}">{{ client.name }}</option>
+{% endfor %}
+</select>
+</div>
+<div class="form-group">
+<label for="price">Selling Price</label>
+<input type="text" class="form-control" id="selling_price" name="selling_price" value="{{ item.selling_price }}" required/>
+</div>
+<input type="submit" class="btn btn-primary" value="TRANSFER">
+</form>
+</div>
+</div>
+</center>
+<br/>
+<center>
+<div class="card" style="width: 50rem;">
+<div class="card-body">
+<form action="{% url 'inventory:returnitm' item.item_id %}" method="post">
+<div class="card-header">RETURN {{ item.name }}</div>
+{% csrf_token %}
+<input type="hidden" name="item" value="{{ item.name }}">
+<div class="form-group">
+<label for="quantity">Quantity</label>
+<input type="number" class="form-control" value="1" id="quantity" name="quantity" min="1" required/>
+</div>
+<div class="form-group">
+<label for="client">Client</label>
+<select name="client" class="form-control" id="client">
+{% for client in clients %}
+<option value="{{ client.name }}">{{ client.name }}</option>
+{% endfor %}
+</select>
+</div>
+<div class="form-group">
+<label for="price">Selling Price</label>
+<input type="text" class="form-control" id="selling_price" name="selling_price" value="{{ item.selling_price }}" required/>
+</div>
+<input type="submit" class="btn btn-primary" value="RETURN">
+</form>
+</div>
+</div>
+</center>
+<button onclick="goBack()" class="btn btn-secondary">Back</button>
+
+<script>
+function goBack() {
+  window.history.back();
+}
+</script>
+
+{% endblock %}

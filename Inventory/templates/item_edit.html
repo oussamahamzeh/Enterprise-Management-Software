@@ -1,0 +1,17 @@
+<!-- item_edit.html -->
+{% extends 'base.html' %}
+{% block content %}
+  <h1>Edit Item</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Save">
+<button onclick="goBack()" class="btn btn-secondary">Back</button>
+
+<script>
+function goBack() {
+  window.history.back();
+}
+</script>
+
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Inventory Management System</h2>
+  {% if items %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Category</th>
+          <th>Quantity</th>
+          <th>Purchase Cost</th>
+          <th>Shipping Cost</th>
+          <th>Selling Price</th>
+          <th>Code</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+          <tr>
+            <td>{{ item.item_id }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.category }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.purchase_cost }}</td>
+            <td>{{ item.shipping_cost }}</td>
+            <td>{{ item.selling_price }}</td>
+            <td>{{ item.code }}</td>
+            <td>
+              <a href="{% url 'Inventory:item_details' item_id=item.item_id %}" class="btn btn-primary">Details</a>
+              <a href="{% url 'Inventory:transferitm' item_id=item.item_id %}" class="btn btn-success">Transfer</a>
+              <a href="{% url 'Inventory:returnitm' item_id=item.item_id %}" class="btn btn-warning">Return</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No items in inventory.</p>
+  {% endif %}
+  <a href="{% url 'Inventory:item_create' %}" class="btn btn-info">Add Item</a>
+{% endblock %}

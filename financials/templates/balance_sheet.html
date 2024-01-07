@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container">
+    <div class="jumbotron text-center bg-dark text-white">
+      <h1 class="display-4">Balance Sheet</h1>
+      <p class="lead">Summary of financial transactions within the specified date range.</p>
+    </div>
+
+    <form method="GET" class="mb-5">
+      <div class="form-group row">
+        <label for="from_date" class="col-sm-2 col-form-label font-weight-bold">From Date:</label>
+        <div class="col-sm-4">
+          <input type="date" id="from_date" name="from_date" class="form-control" value="{{ from_date }}" />
+        </div>
+        <label for="to_date" class="col-sm-2 col-form-label font-weight-bold">To Date:</label>
+        <div class="col-sm-4">
+          <input type="date" id="to_date" name="to_date" class="form-control" value="{{ to_date }}" />
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <div class="col-sm-12 text-center">
+          <button type="submit" class="btn btn-primary">Filter</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h2 class="mb-3">Summary</h2>
+        <table class="table table-striped table-bordered">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Cash</td>
+              <td>{{ cash }}</td>
+            </tr>
+            <tr>
+              <td>Profit</td>
+              <td>{{ profit }}</td>
+            </tr>
+            <tr>
+              <td>Inventory Purchase Cost</td>
+              <td>{{ inventory_purchase_cost }}</td>
+            </tr>
+            <tr>
+              <td>Shipping Cost</td>
+              <td>{{ shipping_cost }}</td>
+            </tr>
+            <tr>
+              <td>Internal Expenses</td>
+              <td>{{ internal_expenses }}</td>
+            </tr>
+            <tr>
+              <td>Net Profit</td>
+              <td>{{ net_profit }}</td>
+            </tr>
+            <tr>
+              <td>Discounts</td>
+              <td>{{ discounts }}</td>
+            </tr>
+            <tr>
+              <td>Asset Value</td>
+              <td>{{ asset_value }}</td>
+            </tr>
+            <tr>
+              <td>Transactions Count</td>
+              <td>{{ transactions_count }}</td>
+            </tr>
+            <tr>
+              <td>Quantity Sold</td>
+              <td>{{ quantity_sold }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+<div class="container">
+<div class="row">
+  <div class="col-md-12">
+    <h2>Items Sold</h2>
+
+    <table class="table table-dark">
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Quantity Sold</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item, quantity in items_sold.items %}
+          <tr>
+            <td>{{ item }}</td>
+            <td>{{ quantity }}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="2">No items sold.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+  <button onclick="goBack()" class="btn btn-secondary">Back</button>
+
+<script>
+function goBack() {
+  window.history.back();
+}
+</script>
+
+{% endblock %}

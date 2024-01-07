@@ -1,6 +1,23 @@
 Initial commit.
+######################################################################################################################
+
+GO TO cashier\views.py
+
+Change:
+subprocess.Popen(['start', path], shell=True)  # os.startfile(path, "print")  #
+
+To: 
+os.startfile(path, "print")  #subprocess.Popen(['start', path], shell=True)  #
+
+######################################################################################################################
+
+Copy the images folder from Media
+
+######################################################################################################################
 
 TO-DO:
+inf. Optimize the code. Especially the HTML.
+
 1. Throw an error when the inventory quantity is below zero.
 2. Prevent Wholesale from opening without login like the other pages.
 3. Change the background of the cashier and wholesale to the ones in the image folder. Find other images for the other pages.
@@ -16,5 +33,5 @@ TO-DO:
 13. Find a way to install the software without giving out the source code.
 14. Create a Subscription system to sell the software on a subscription basis.
 15. Allow the access of the same database from different computers.
-16. Upgrade the cyber security.
+16. Upgrade the cybersecurity.
 
