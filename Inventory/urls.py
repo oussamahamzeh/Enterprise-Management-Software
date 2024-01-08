@@ -1,5 +1,6 @@
 from django.urls import path, include
-
+from django.conf import settings
+from django.conf.urls.static import static
 from . import views
 
 app_name = 'Inventory'
@@ -13,4 +14,4 @@ urlpatterns=[
 	path('item/edit/<int:item_id>/', views.item_edit, name='item_edit'),
 	path('item/delete/<int:item_id>/', views.item_delete, name='item_delete'),
 	path('item/create/', views.item_create, name='item_create'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

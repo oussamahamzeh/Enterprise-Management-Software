@@ -20,8 +20,8 @@ inf. Optimize the code. Especially the HTML. TEST ALL FUNCTIONALITIES!!!
 
 1. Throw an error when the inventory quantity is below zero.
 #DONE# Prevent Wholesale from opening without login like the other pages.
-#DONE# Change the background of the cashier and wholesale to the ones in the image folder.
-4. Find other backgrounds for the rest of the pages.
+#DONE# Change the background of the cashier and wholesale and inventory to the ones in the image folder.
+4. Find other backgrounds for the financials and documents pages.
 #DONE# Fix the rebuy list.
 6. Delete the log files. Stop uploading them to the commits.
 7. Remove the return page and add a return option to the inventory page.
