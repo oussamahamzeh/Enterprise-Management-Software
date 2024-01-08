@@ -24,7 +24,7 @@ inf. Optimize the code. Especially the HTML.
 #DONE# Fix the rebuy list.
 5. Delete the log files. Stop uploading them to the commits.
 6. Remove the return page and add a return option to the inventory page.
-7. Change the login page and the Django Dashboard to be original.
+#DONE# Change the login page and the Django Dashboard to be original.
 8. Add a forgot my password option to send an email if there is a given email.
 9. Change the cashier & financials folder name to capital letters.
 #DONE# Add a different error page when trying to use the software without loggin in, or redirect it to the log in page.
@@ -34,4 +34,4 @@ inf. Optimize the code. Especially the HTML.
 14. Create a Subscription system to sell the software on a subscription basis.
 15. Allow the access of the same database from different computers.
 16. Upgrade the cybersecurity.
-
+17. TEST ALL FUNCTIONALITIES!!!
