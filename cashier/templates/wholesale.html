@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load cashier_filters %}
-
+{% load static %}
 {% block content %}
 <!DOCTYPE html>
 <html>
@@ -25,6 +25,15 @@
         }
         th {
             background-color: #f2f2f2;
+        }
+
+        body {
+            background-image: url('{% get_media_prefix %}/images/inventory_background.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center center;
+            color: white; /* Set text color to white */
         }
     </style>
 </head>

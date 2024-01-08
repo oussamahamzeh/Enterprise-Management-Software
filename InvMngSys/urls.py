@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 from django.contrib.admin.options import BaseModelAdmin
-from django.urls import path,include
+from django.urls import path, include
 from django.contrib.auth import views as auth_views
 
 import InvMngSys
@@ -31,21 +31,19 @@ from InvMngSys.custom_admin import custom_admin_site
 from django.urls import path
 from django.contrib import admin
 
-
-
 urlpatterns = [
-    path('', views.homepage, name='homepage'),
-    #path('', TemplateView.as_view(template_name='homepage.html'), name='homepage'),
-    path('admin/', custom_admin_site.urls),
-    path('inventory/', include('Inventory.urls', namespace='inventory')),#items/
-    path('documents/', include('Documents.urls', namespace='documents')), #documents/
-    path('financials/', include('financials.urls', namespace='financials')), #financials/
-    path('cashier/', include('cashier.urls', namespace='cashier')), #cashier/
-    path('login/', auth_views.LoginView.as_view(), name='login'),
-    #path('', include('django.contrib.auth.urls')),
+                  path('', views.homepage, name='homepage'),
+                  # path('', TemplateView.as_view(template_name='homepage.html'), name='homepage'),
+                  path('admin/', custom_admin_site.urls),
+                  path('inventory/', include('Inventory.urls', namespace='inventory')),  # items/
+                  path('documents/', include('Documents.urls', namespace='documents')),  # documents/
+                  path('financials/', include('financials.urls', namespace='financials')),  # financials/
+                  path('cashier/', include('cashier.urls', namespace='cashier')),  # cashier/
+                  path('login/', auth_views.LoginView.as_view(), name='login'),
+                  # path('', include('django.contrib.auth.urls')),
 
-    #path('', include('django.contrib.auth.urls')),#accounts/
-    # path('login/', views.login_view, name='login'),
-    #path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
-    #path('logout/', auth_views.LogoutView.as_view(), name='logout'),
-]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+                  # path('', include('django.contrib.auth.urls')),#accounts/
+                  # path('login/', views.login_view, name='login'),
+                  # path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
+                  # path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
