@@ -28,7 +28,7 @@ inf. Optimize the code. Especially the HTML.
 8. Add a forgot my password option to send an email if there is a given email.
 9. Change the cashier & financials folder name to capital letters.
 #DONE# Add a different error page when trying to use the software without loggin in, or redirect it to the log in page.
-11. Make the login page the homepage if not logged in, otherwise keep it as is.
+#DONE# Make the login page the homepage if not logged in, otherwise keep it as is.
 12. To date is by default today if not given.
 13. Find a way to install the software without giving out the source code.
 14. Create a Subscription system to sell the software on a subscription basis.

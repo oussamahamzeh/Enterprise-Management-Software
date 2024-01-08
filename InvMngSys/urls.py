@@ -21,15 +21,17 @@ from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
-
+from . import views
 
 urlpatterns = [
-    path('', TemplateView.as_view(template_name='homepage.html'), name='homepage'),
+    path('', views.homepage, name='homepage'),
+    #path('', TemplateView.as_view(template_name='homepage.html'), name='homepage'),
     path('admin/', admin.site.urls), #admin/
     path('inventory/', include('Inventory.urls', namespace='inventory')),#items/
     path('documents/', include('Documents.urls', namespace='documents')), #documents/
     path('financials/', include('financials.urls', namespace='financials')), #financials/
     path('cashier/', include('cashier.urls', namespace='cashier')), #cashier/
+    path('login/', auth_views.LoginView.as_view(), name='login'),
     #path('', include('django.contrib.auth.urls')),
 
     #path('', include('django.contrib.auth.urls')),#accounts/

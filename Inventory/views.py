@@ -22,10 +22,6 @@ from django.contrib import messages
 from .models import Item
 from .forms import ItemForm
 
-@login_required
-def home(request):
-    items = Item.objects.filter(user=request.user)
-    return render(request, 'home.html', {'items': items})
 
 
 @login_required
