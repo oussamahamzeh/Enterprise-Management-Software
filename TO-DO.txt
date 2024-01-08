@@ -18,7 +18,7 @@ Copy the images folder from Media
 TO-DO:
 inf. Optimize the code. Especially the HTML. TEST ALL FUNCTIONALITIES!!!
 
-1. Throw a pop-up warning window when the inventory quantity is below zero.
+#DONE# Throw a pop-up warning window when the inventory quantity is below zero.
 #DONE# Prevent Wholesale from opening without login like the other pages.
 #DONE# Change the background of the cashier and wholesale and inventory to the ones in the image folder.
 4. Find other backgrounds for the financials and documents pages.
