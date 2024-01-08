@@ -41,8 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Documents.apps.DocumentsConfig',
     'financials.apps.FinancialsConfig',
-    'cashier'
-
+    'cashier',
+    'mathfilters',
 ]
 
 MIDDLEWARE = [

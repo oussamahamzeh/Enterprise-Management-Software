@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
-{% load custom_filters %}
+{% load inventory_filters %}
+{% load mathfilters %}
 
 {% block content %}
   <div class="jumbotron text-center">
@@ -27,7 +28,7 @@
                   <td>{{ item.name }}</td>
                   <td>{{ item.quantity }}</td>
                   <td>{{ item.rebuy_till }}</td>
-                  <td>{{ item.rebuy_till|subtract:item.quantity }}</td>
+                  <td>{{ item.rebuy_till|sub:item.quantity }}</td>
                 </tr>
               {% endif %}
             {% empty %}
