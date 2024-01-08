@@ -27,7 +27,7 @@ inf. Optimize the code. Especially the HTML.
 7. Change the login page and the Django Dashboard to be original.
 8. Add a forgot my password option to send an email if there is a given email.
 9. Change the cashier & financials folder name to capital letters.
-10. Add a different error page when trying to use the software without loggin in, or redirect it to the log in page.
+#DONE# Add a different error page when trying to use the software without loggin in, or redirect it to the log in page.
 11. Make the login page the homepage if not logged in, otherwise keep it as is.
 12. To date is by default today if not given.
 13. Find a way to install the software without giving out the source code.
