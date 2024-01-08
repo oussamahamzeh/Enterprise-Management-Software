@@ -35,6 +35,7 @@ inf. Optimize the code. Especially the HTML. TEST ALL FUNCTIONALITIES!!!
 15. Create a Subscription system to sell the software on a subscription basis.
 16. Allow the access of the same database from different computers.
 17. Upgrade the cybersecurity.
-18. If the discount is negative don't add it to the receipt.
-19. Change create transaction button.
+#DONE# If the discount is negative don't add it to the receipt.
+#DONE# Change create transaction button.
 20. Prevent create transaction button to create a new receipt if no items are scanned.
+21. Edit the tables, so they are easy to view and read with the background.

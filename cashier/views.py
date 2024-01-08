@@ -177,8 +177,10 @@ def receipt(transactions):
         added_rows = added_rows + 1
         worksheet.cell(row=row_num + added_rows, column=2, value=transaction.quantity)
         worksheet.cell(row=row_num + added_rows, column=2, value=transaction.quantity).alignment = alignment
-        worksheet.cell(row=row_num + added_rows, column=3, value=transaction.item.selling_price)
-        worksheet.cell(row=row_num + added_rows, column=3, value=transaction.item.selling_price).alignment = alignment
+        if transaction.discount < 0:
+            temp_value = abs(float(transaction.item.selling_price) - float(transaction.selling_price))
+            worksheet.cell(row=row_num + added_rows, column=3, value=transaction.item.selling_price+temp_value)
+            worksheet.cell(row=row_num + added_rows, column=3, value=transaction.item.selling_price+temp_value).alignment = alignment
         lines = line_split(transaction.item.name)
         for idx, line in enumerate(lines):
             if idx != 0:
@@ -188,7 +190,7 @@ def receipt(transactions):
         # worksheet.row_dimensions[row_num].auto_size = True
         total_sum = total_sum + (float(transaction.selling_price) * int(transaction.quantity))
 
-        if transaction.discount != 0:
+        if transaction.discount > 0:
             discount = ((float(transaction.discount) / float(transaction.quantity)) / float(
                 transaction.item.selling_price)) * 100
             rounded_discount = round(discount, 2)
