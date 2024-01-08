@@ -18,7 +18,7 @@ Copy the images folder from Media
 TO-DO:
 inf. Optimize the code. Especially the HTML. TEST ALL FUNCTIONALITIES!!!
 
-1. Throw an error when the inventory quantity is below zero.
+1. Throw a pop-up warning window when the inventory quantity is below zero.
 #DONE# Prevent Wholesale from opening without login like the other pages.
 #DONE# Change the background of the cashier and wholesale and inventory to the ones in the image folder.
 4. Find other backgrounds for the financials and documents pages.
@@ -35,3 +35,6 @@ inf. Optimize the code. Especially the HTML. TEST ALL FUNCTIONALITIES!!!
 15. Create a Subscription system to sell the software on a subscription basis.
 16. Allow the access of the same database from different computers.
 17. Upgrade the cybersecurity.
+18. If the discount is negative don't add it to the receipt.
+19. Change create transaction button.
+20. Prevent create transaction button to create a new receipt if no items are scanned.

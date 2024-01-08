@@ -243,6 +243,16 @@
                 console.log('Transactions created successfully');
                 document.getElementById('search-results').innerHTML = '';
                 document.getElementById('code').focus(); // Set focus back to input field
+            } else {
+                // Show warning pop-up without stopping execution
+                console.warn('Warning:', data.errors);
+                const warningMessages = data.errors || [];
+                document.getElementById('search-results').innerHTML = '';
+                document.getElementById('code').focus(); // Set focus back to input field
+                warningMessages.forEach(message => {
+                    window.alert(message);
+                });
+
             }
         });
     }

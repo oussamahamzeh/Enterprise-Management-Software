@@ -15,6 +15,7 @@ from openpyxl.utils import get_column_letter, units
 from django.http import JsonResponse
 from openpyxl.worksheet.page import PageMargins  # , PageSetup
 # from openpyxl.worksheet.print_options import PrintPageSetup
+from django.contrib import messages
 
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -37,7 +38,7 @@ def create_transactions(request):
             # Retrieve discount and subtotal values from the form
             discount_percentage = float(data.get('discount', 0)) / 100
             subtotal = float(data.get('subtotal', 0))
-
+            error_messages = []
             # Now you can iterate through the transactions and perform the necessary actions
             for transaction in filtered_transactions:
 
@@ -63,6 +64,10 @@ def create_transactions(request):
                                           TVA=TVA)
                 transaction.save()
                 transaction_list.append(transaction)
+
+                if item.quantity < int(quantity):
+                    error_messages.append(f"Item {item.name} has insufficient quantity.")
+
                 item.quantity = item.quantity - int(quantity)
                 item.save()
 
@@ -74,6 +79,8 @@ def create_transactions(request):
             # Clear results
             del request.session['search_results']  # Clear the session key
             request.session.modified = True  # Mark session as modified to save changes
+            if error_messages:
+                return JsonResponse({'success': False, 'errors': error_messages})
 
             return JsonResponse({'success': True})  # redirect('cashier:search_item')
         except json.JSONDecodeError:
@@ -400,7 +407,7 @@ def wholesale_create_transactions(request):
             # Retrieve discount and subtotal values from the form
             margin = float(data.get('margin', 0)) / 100
             subtotal = float(data.get('subtotal', 0))
-
+            error_messages = []
             # Now you can iterate through the transactions and perform the necessary actions
             for transaction in filtered_transactions:
 
@@ -425,6 +432,10 @@ def wholesale_create_transactions(request):
                                           TVA=TVA)
                 transaction.save()
                 transaction_list.append(transaction)
+
+                if item.quantity < int(quantity):
+                    error_messages.append(f"Item {item.name} has insufficient quantity.")
+
                 item.quantity = item.quantity - int(quantity)
                 item.save()
 
@@ -436,6 +447,8 @@ def wholesale_create_transactions(request):
             # Clear results
             del request.session['search_results']  # Clear the session key
             request.session.modified = True  # Mark session as modified to save changes
+            if error_messages:
+                return JsonResponse({'success': False, 'errors': error_messages})
 
             return JsonResponse({'success': True})  # redirect('cashier:search_item')
         except json.JSONDecodeError:
