@@ -1,6 +1,17 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
+<style>
+    body {
+        background-image: url('{% get_media_prefix %}/images/inventory_background.jpg');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center center;
+        color: white; /* Set text color to white */
+    }
+</style>
 <div class="alert alert-primary" role="alert">
-<h1>TRANSACTION : {{ transaction.trans_id }}<h1> Return {{ quantity }} {{ item.name }}s was succesful!
+<h1>TRANSACTION : {{ transaction.trans_id }}<h1> Return {{ quantity }} {{ item.name }} was succesful!
 <div>
 {% endblock %}

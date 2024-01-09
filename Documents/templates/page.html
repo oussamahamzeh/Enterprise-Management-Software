@@ -1,28 +1,88 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
-<div class="container mt-5">
-  <div class="row">
-    <div class="col-md-6 offset-md-3">
-      <div class="card p-4 shadow-lg">
-        <div class="card-header bg-primary text-white">
-          <h2 class="text-center mb-0"><i class="fas fa-file-alt mr-2"></i>Document Management</h2>
-        </div>
-        <div class="card-body">
-          <ul class="list-group">
-            <li class="list-group-item"><a href="{% url 'documents:upload_document' %}"><i class="fas fa-cloud-upload-alt mr-2"></i>Upload Document</a></li>
-            <li class="list-group-item"><a href="{% url 'documents:document_list' %}"><i class="fas fa-file mr-2"></i>Document List</a></li>
-          </ul>
-
-        </div>
-
-      </div>
-
+<style>
+  body {
+    background-image: url('{% get_media_prefix %}/images/documents_background.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center center;
+    color: #333;
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 100px);
+    margin-top: -100px;
+  }
+  .card {
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    padding: 30px;
+  }
+  .card-header {
+    background-color: #007bff;
+    border-radius: 10px 10px 0 0;
+    padding: 15px 0;
+    text-align: center;
+  }
+  .card-title {
+    font-weight: bold;
+    font-size: 32px;
+    margin: 0;
+    color: white;
+  }
+  .list-group {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+  .list-group-item {
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  .list-group-item:last-child {
+    border-bottom: none;
+  }
+  .list-group-item a {
+    font-size: 18px;
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    transition: color 0.3s ease;
+    text-shadow: none; /* Remove text shadow */
+  }
+  .list-group-item a i {
+    margin-right: 10px;
+  }
+  .list-group-item a:hover {
+    color: #0056b3;
+  }
+</style>
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <h2 class="card-title"><i class="fas fa-file-alt mr-2"></i>Document Management</h2>
     </div>
-
+    <div class="card-body">
+      <ul class="list-group">
+        <li class="list-group-item">
+          <a href="{% url 'documents:upload_document' %}"><i class="fas fa-cloud-upload-alt"></i>&nbsp;Upload Document</a>
+        </li>
+        <li class="list-group-item">
+          <a href="{% url 'documents:document_list' %}"><i class="fas fa-file"></i>&nbsp;Document List</a>
+        </li>
+      </ul>
+    </div>
   </div>
-
 </div>
-
-
 {% endblock %}

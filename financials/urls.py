@@ -1,6 +1,7 @@
 from django.urls import include
 from django.urls import path
-
+from django.conf import settings
+from django.conf.urls.static import static
 
 from django.urls import path
 from . import views
@@ -23,4 +24,4 @@ urlpatterns = [
     # path('balance/', views.balance, name='balance'),
     # path('income_statement/', views.income_statement, name='income_statement'),
     # Invoices
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

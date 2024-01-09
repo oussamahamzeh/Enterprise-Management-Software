@@ -1,7 +1,16 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
-
+  <style>
+      body {
+          background-image: url('{% get_media_prefix %}/images/financials_background.jpeg');
+          background-size: cover;
+          background-repeat: no-repeat;
+          background-attachment: fixed;
+          background-position: center center;
+          color: white; /* Set text color to white */
+      }
+  </style>
   <h1 class="mb-4">Transactions</h1>
 
   <form class="mb-5">

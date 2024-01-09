@@ -1,6 +1,16 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
+  <style>
+      body {
+          background-image: url('{% get_media_prefix %}/images/financials_background.jpeg');
+          background-size: cover;
+          background-repeat: no-repeat;
+          background-attachment: fixed;
+          background-position: center center;
+          color: white; /* Set text color to white */
+      }
+  </style>
   <div class="jumbotron text-center">
     <h1>Welcome to Financials</h1>
     <p>View and manage financial transactions.</p>

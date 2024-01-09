@@ -34,13 +34,14 @@
     <tbody>
       {% for item in items %}
       <tr>
-        <td><a href="{% url 'Inventory:item_details' item.item_id %}" class="text-primary">{{ item.name }}</a></td>
+        <td>{{ item.name }}</td>
         <td>{{ item.company }}</td>
         <td>{{ item.category }}</td>
         <td>{{ item.quantity }}</td>
         <td>{{ item.selling_price }}</td>
         <td>{{ item.description }}</td>
         <td>
+          <a href="{% url 'Inventory:item_details' item.item_id %}" class="btn btn-primary btn-sm mr-2">Return</a>
           <a href="{% url 'Inventory:item_edit' item.item_id %}" class="btn btn-primary btn-sm mr-2">Edit</a>
           <form action="{% url 'Inventory:item_delete' item.item_id %}" method="post" style="display:inline;">
             {% csrf_token %}

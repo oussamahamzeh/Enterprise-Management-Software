@@ -31,7 +31,8 @@ def create_transactions(request):
             transactions = data.get('transactions', [])  # Parse the JSON data
             filtered_transactions = [transaction for transaction in transactions if
                                      transaction['quantity'] not in ('', '0')]
-
+            if not filtered_transactions:
+                return JsonResponse({'success': True})
             # print("Received JSON data:", data)
             # print("Filtered transactions:", filtered_transactions)
 
@@ -106,174 +107,176 @@ def get_previous_counter(directory):
 
 
 def receipt(transactions):
-    print("Creating Receipt function!")
+    if transactions:
+        print("Creating Receipt function!")
 
-    # Create a new workbook and worksheet
-    workbook = openpyxl.Workbook()
-    worksheet = workbook.active
+        # Create a new workbook and worksheet
+        workbook = openpyxl.Workbook()
+        worksheet = workbook.active
 
-    # Write the headers to the worksheet
-    headers = ['Item', 'Quantity', 'Price']
+        # Write the headers to the worksheet
+        headers = ['Item', 'Quantity', 'Price']
 
-    # Apply center alignment to the cell
-    alignment = Alignment(horizontal='center', vertical='center')
-    alignment02 = Alignment(horizontal='right', vertical='center')
+        # Apply center alignment to the cell
+        alignment = Alignment(horizontal='center', vertical='center')
+        alignment02 = Alignment(horizontal='right', vertical='center')
 
-    font = Font(name='Arial', size=16, bold=True, italic=False)  # , color="0033CC")  # Customize font settings
-    font02 = Font(name='Arial', size=12, bold=True, italic=True)  # , color="0033CC")  # Customize font settings
+        font = Font(name='Arial', size=16, bold=True, italic=False)  # , color="0033CC")  # Customize font settings
+        font02 = Font(name='Arial', size=12, bold=True, italic=True)  # , color="0033CC")  # Customize font settings
 
-    cell01 = worksheet.cell(row=1, column=1, value="  Hamzeh Group - Fixtec")
-    cell01.font = font
+        cell01 = worksheet.cell(row=1, column=1, value="  Hamzeh Group - Fixtec")
+        cell01.font = font
 
-    # Apply bold font style
-    font = Font(bold=True)
+        # Apply bold font style
+        font = Font(bold=True)
 
-    worksheet.cell(row=2, column=1, value="           Main Road, Semqanieh, El-Shouf")
-    worksheet.cell(row=2, column=1, value="           Main Road, Semqanieh, El-Shouf").font = font
+        worksheet.cell(row=2, column=1, value="           Main Road, Semqanieh, El-Shouf")
+        worksheet.cell(row=2, column=1, value="           Main Road, Semqanieh, El-Shouf").font = font
 
-    worksheet.cell(row=3, column=1, value="                    Near Samir's Bookshop")
-    worksheet.cell(row=3, column=1, value="                    Near Samir's Bookshop").font = font
+        worksheet.cell(row=3, column=1, value="                    Near Samir's Bookshop")
+        worksheet.cell(row=3, column=1, value="                    Near Samir's Bookshop").font = font
 
-    worksheet.cell(row=4, column=1, value="               Tel: 25-566840  /  03-280478")
-    worksheet.cell(row=4, column=1, value="               Tel: 25-566840  /  03-280478").font = font
+        worksheet.cell(row=4, column=1, value="               Tel: 25-566840  /  03-280478")
+        worksheet.cell(row=4, column=1, value="               Tel: 25-566840  /  03-280478").font = font
 
-    worksheet.cell(row=5, column=1, value="           Email: grouphamzeh@gmail.com")
-    worksheet.cell(row=5, column=1, value="           Email: grouphamzeh@gmail.com").font = font
+        worksheet.cell(row=5, column=1, value="           Email: grouphamzeh@gmail.com")
+        worksheet.cell(row=5, column=1, value="           Email: grouphamzeh@gmail.com").font = font
 
-    # Get the current datetime
-    current_datetime = datetime.now()
+        # Get the current datetime
+        current_datetime = datetime.now()
 
-    # Format the datetime as a string
-    formatted_datetime = current_datetime.strftime('%Y-%m-%d %H:%M:%S')
+        # Format the datetime as a string
+        formatted_datetime = current_datetime.strftime('%Y-%m-%d %H:%M:%S')
 
-    worksheet.cell(row=7, column=1, value="Date")
-    worksheet.cell(row=7, column=1, value="Date").font = font
-    worksheet.cell(row=7, column=1, value="Date").alignment = alignment
-    worksheet.cell(row=7, column=2, value=formatted_datetime)
+        worksheet.cell(row=7, column=1, value="Date")
+        worksheet.cell(row=7, column=1, value="Date").font = font
+        worksheet.cell(row=7, column=1, value="Date").alignment = alignment
+        worksheet.cell(row=7, column=2, value=formatted_datetime)
 
-    # Adjust column width to fit the content
+        # Adjust column width to fit the content
 
-    column_letter = get_column_letter(1)  # Column A
-    worksheet.column_dimensions[column_letter].width = 20  # Adjust the width as needed
+        column_letter = get_column_letter(1)  # Column A
+        worksheet.column_dimensions[column_letter].width = 20  # Adjust the width as needed
 
-    # column_letter = get_column_letter(3)  # Column C
-    # worksheet.column_dimensions[column_letter].width = 10  # Adjust the width as needed
+        # column_letter = get_column_letter(3)  # Column C
+        # worksheet.column_dimensions[column_letter].width = 10  # Adjust the width as needed
 
-    # column_letter = get_column_letter(5)  # Column E
-    # worksheet.column_dimensions[column_letter].width = 12  # Adjust the width as needed
+        # column_letter = get_column_letter(5)  # Column E
+        # worksheet.column_dimensions[column_letter].width = 12  # Adjust the width as needed
 
-    for col_num, header_title in enumerate(headers, 1):
-        cell = worksheet.cell(row=9, column=col_num)
-        cell.value = header_title
-        cell.alignment = alignment
-        cell.font = font
+        for col_num, header_title in enumerate(headers, 1):
+            cell = worksheet.cell(row=9, column=col_num)
+            cell.value = header_title
+            cell.alignment = alignment
+            cell.font = font
 
-    total_sum = 0
-    added_rows = 0
-    discount = 0
-    rounded_discount = 0
-    # Write the transactions to the worksheet
-    for row_num, transaction in enumerate(transactions, 10):
-        added_rows = added_rows + 1
-        worksheet.cell(row=row_num + added_rows, column=2, value=transaction.quantity)
-        worksheet.cell(row=row_num + added_rows, column=2, value=transaction.quantity).alignment = alignment
-        if transaction.discount < 0:
-            temp_value = abs(float(transaction.item.selling_price) - float(transaction.selling_price))
-            worksheet.cell(row=row_num + added_rows, column=3, value=transaction.item.selling_price+temp_value)
-            worksheet.cell(row=row_num + added_rows, column=3, value=transaction.item.selling_price+temp_value).alignment = alignment
-        lines = line_split(transaction.item.name)
-        for idx, line in enumerate(lines):
-            if idx != 0:
-                added_rows = added_rows + 1
-            worksheet.cell(row=row_num + added_rows, column=1, value=line)
-
-        # worksheet.row_dimensions[row_num].auto_size = True
-        total_sum = total_sum + (float(transaction.selling_price) * int(transaction.quantity))
-
-        if transaction.discount > 0:
-            discount = ((float(transaction.discount) / float(transaction.quantity)) / float(
-                transaction.item.selling_price)) * 100
-            rounded_discount = round(discount, 2)
+        total_sum = 0
+        added_rows = 0
+        discount = 0
+        rounded_discount = 0
+        # Write the transactions to the worksheet
+        for row_num, transaction in enumerate(transactions, 10):
             added_rows = added_rows + 1
-            worksheet.cell(row=row_num + added_rows, column=1, value="Discount " + str(rounded_discount) + " %")
-            worksheet.cell(row=row_num + added_rows, column=1,
-                           value="Discount " + str(rounded_discount) + " %").alignment = alignment
-            worksheet.cell(row=row_num + added_rows, column=2, value="-")
-            worksheet.cell(row=row_num + added_rows, column=2, value="-").alignment = alignment
-            worksheet.cell(row=row_num + added_rows, column=3,
-                           value=float(transaction.item.selling_price) - float(transaction.selling_price))
-            worksheet.cell(row=row_num + added_rows, column=3, value=float(transaction.item.selling_price) - float(
-                transaction.selling_price)).alignment = alignment
+            worksheet.cell(row=row_num + added_rows, column=2, value=transaction.quantity)
+            worksheet.cell(row=row_num + added_rows, column=2, value=transaction.quantity).alignment = alignment
+            if transaction.discount < 0:
+                temp_value = abs(float(transaction.item.selling_price) - float(transaction.selling_price))
+                worksheet.cell(row=row_num + added_rows, column=3, value=transaction.item.selling_price+temp_value)
+                worksheet.cell(row=row_num + added_rows, column=3, value=transaction.item.selling_price+temp_value).alignment = alignment
+            lines = line_split(transaction.item.name)
+            for idx, line in enumerate(lines):
+                if idx != 0:
+                    added_rows = added_rows + 1
+                worksheet.cell(row=row_num + added_rows, column=1, value=line)
 
-    total_sum = round(total_sum, 2)
-    final_row = len(transactions) + 9 + added_rows
-    worksheet.cell(row=final_row + 2, column=1, value="Sub-total")
-    worksheet.cell(row=final_row + 2, column=1, value="Sub-total").font = font
-    worksheet.cell(row=final_row + 2, column=2, value=total_sum * 0.89)
-    worksheet.cell(row=final_row + 2, column=3, value="USD")
-    worksheet.cell(row=final_row + 3, column=1, value="TVA")
-    worksheet.cell(row=final_row + 3, column=1, value="TVA").font = font
-    worksheet.cell(row=final_row + 3, column=2, value=total_sum * 0.11)
-    worksheet.cell(row=final_row + 3, column=3, value="USD")
-    worksheet.cell(row=final_row + 5, column=1, value="Total")
-    worksheet.cell(row=final_row + 5, column=1, value="Total").font = font
-    worksheet.cell(row=final_row + 5, column=2, value=total_sum)
-    worksheet.cell(row=final_row + 5, column=3, value="USD")
-    worksheet.cell(row=final_row + 8, column=1, value="        PLEASE VISIT US AGAIN")
-    worksheet.cell(row=final_row + 8, column=1, value="        PLEASE VISIT US AGAIN").font = font02
-    worksheet.cell(row=final_row + 9, column=1, value="                   Thank You!")
-    worksheet.cell(row=final_row + 9, column=1, value="                   Thank You!").font = font02
+            # worksheet.row_dimensions[row_num].auto_size = True
+            total_sum = total_sum + (float(transaction.selling_price) * int(transaction.quantity))
 
-    # Set print page options
-    worksheet.print_options.horizontalCentered = True  # Center horizontally
-    worksheet.print_options.verticalCentered = False  # Optional: Center vertically
-    worksheet.page_setup.orientation = worksheet.ORIENTATION_PORTRAIT  # Portrait orientation
-    # worksheet.page_setup.fitToPage = True  # Fit to page
-    # worksheet.page_setup.fitToHeight = 0  # Fit to page height
-    # worksheet.page_setup.fitToWidth = 1  # Fit to page width
+            if transaction.discount > 0:
+                discount = ((float(transaction.discount) / float(transaction.quantity)) / float(
+                    transaction.item.selling_price)) * 100
+                rounded_discount = round(discount, 2)
+                added_rows = added_rows + 1
+                worksheet.cell(row=row_num + added_rows, column=1, value="Discount " + str(rounded_discount) + " %")
+                worksheet.cell(row=row_num + added_rows, column=1,
+                               value="Discount " + str(rounded_discount) + " %").alignment = alignment
+                worksheet.cell(row=row_num + added_rows, column=2, value="-")
+                worksheet.cell(row=row_num + added_rows, column=2, value="-").alignment = alignment
+                worksheet.cell(row=row_num + added_rows, column=3,
+                               value=float(transaction.item.selling_price) - float(transaction.selling_price))
+                worksheet.cell(row=row_num + added_rows, column=3, value=float(transaction.item.selling_price) - float(
+                    transaction.selling_price)).alignment = alignment
 
-    # Set print area
-    rows_to_print = final_row + 12
-    print_area = 'A1:C{}'.format(rows_to_print)
-    worksheet.print_area = print_area
+        total_sum = round(total_sum, 2)
+        final_row = len(transactions) + 9 + added_rows
+        worksheet.cell(row=final_row + 2, column=1, value="Sub-total")
+        worksheet.cell(row=final_row + 2, column=1, value="Sub-total").font = font
+        worksheet.cell(row=final_row + 2, column=2, value=total_sum * 0.89)
+        worksheet.cell(row=final_row + 2, column=3, value="USD")
+        worksheet.cell(row=final_row + 3, column=1, value="TVA")
+        worksheet.cell(row=final_row + 3, column=1, value="TVA").font = font
+        worksheet.cell(row=final_row + 3, column=2, value=total_sum * 0.11)
+        worksheet.cell(row=final_row + 3, column=3, value="USD")
+        worksheet.cell(row=final_row + 5, column=1, value="Total")
+        worksheet.cell(row=final_row + 5, column=1, value="Total").font = font
+        worksheet.cell(row=final_row + 5, column=2, value=total_sum)
+        worksheet.cell(row=final_row + 5, column=3, value="USD")
+        worksheet.cell(row=final_row + 8, column=1, value="        PLEASE VISIT US AGAIN")
+        worksheet.cell(row=final_row + 8, column=1, value="        PLEASE VISIT US AGAIN").font = font02
+        worksheet.cell(row=final_row + 9, column=1, value="                   Thank You!")
+        worksheet.cell(row=final_row + 9, column=1, value="                   Thank You!").font = font02
 
-    # Set custom page size in millimeters
-    # custom_page_width_mm = 60
-    # custom_page_height_mm = min(110 + ((len(transactions) + added_rows) * 6), 210)
-    worksheet.page_setup.paperSize = 0x11  # Custom paper size code for Excel (see below)
-    # worksheet.page_setup.pageWidth = custom_page_width_mm * 0.0393701  # Convert to inches
-    # worksheet.page_setup.pageHeight = custom_page_height_mm * 0.0393701  # Convert to inches
+        # Set print page options
+        worksheet.print_options.horizontalCentered = True  # Center horizontally
+        worksheet.print_options.verticalCentered = False  # Optional: Center vertically
+        worksheet.page_setup.orientation = worksheet.ORIENTATION_PORTRAIT  # Portrait orientation
+        # worksheet.page_setup.fitToPage = True  # Fit to page
+        # worksheet.page_setup.fitToHeight = 0  # Fit to page height
+        # worksheet.page_setup.fitToWidth = 1  # Fit to page width
 
-    # Set page margins
-    page_margins = PageMargins(left=0, right=0, top=0, bottom=0, header=0, footer=0)
-    worksheet.page_margins = page_margins
+        # Set print area
+        rows_to_print = final_row + 12
+        print_area = 'A1:C{}'.format(rows_to_print)
+        worksheet.print_area = print_area
 
-    # Set print page setup to center horizontally
-    # print_page_setup = PrintPageSetup(horizontalCentered=True)
-    # worksheet.print_page_setup = print_page_setup
+        # Set custom page size in millimeters
+        # custom_page_width_mm = 60
+        # custom_page_height_mm = min(110 + ((len(transactions) + added_rows) * 6), 210)
+        worksheet.page_setup.paperSize = 0x11  # Custom paper size code for Excel (see below)
+        # worksheet.page_setup.pageWidth = custom_page_width_mm * 0.0393701  # Convert to inches
+        # worksheet.page_setup.pageHeight = custom_page_height_mm * 0.0393701  # Convert to inches
 
-    # Apply page setup for "Fit to One Page"
-    page_setup = worksheet.page_setup
-    page_setup.fitToPage = True
-    page_setup.fitToHeight = 1
-    page_setup.fitToWidth = 1
+        # Set page margins
+        page_margins = PageMargins(left=0, right=0, top=0, bottom=0, header=0, footer=0)
+        worksheet.page_margins = page_margins
 
-    # Choose a directory to save the file
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    save_path = os.path.join(BASE_DIR, 'media/receipts')
-    counter = get_previous_counter(save_path)
-    file_name = f'Receipt_{counter}.xlsx'
-    full_file_path = os.path.join(save_path, file_name)
+        # Set print page setup to center horizontally
+        # print_page_setup = PrintPageSetup(horizontalCentered=True)
+        # worksheet.print_page_setup = print_page_setup
 
-    # Save the workbook to the chosen location
-    workbook.save(full_file_path)
+        # Apply page setup for "Fit to One Page"
+        page_setup = worksheet.page_setup
+        page_setup.fitToPage = True
+        page_setup.fitToHeight = 1
+        page_setup.fitToWidth = 1
 
-    print_receipt(full_file_path)
+        # Choose a directory to save the file
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        save_path = os.path.join(BASE_DIR, 'media/receipts')
+        counter = get_previous_counter(save_path)
+        file_name = f'Receipt_{counter}.xlsx'
+        full_file_path = os.path.join(save_path, file_name)
 
-    # worksheet.PrintOut()  # Print the entire workbook
+        # Save the workbook to the chosen location
+        workbook.save(full_file_path)
 
-    return HttpResponse(status=204)  # Return an empty response with status code 204 (No Content)
+        print_receipt(full_file_path)
 
+        # worksheet.PrintOut()  # Print the entire workbook
+
+        return HttpResponse(status=204)  # Return an empty response with status code 204 (No Content)
+    else:
+        return HttpResponse(status=400)  # Return an empty response with status code 400 (Bad Request)
 
 def line_split(name, max_width=24):
     # Split the item name into lines
@@ -402,6 +405,8 @@ def wholesale_create_transactions(request):
             transactions = data.get('transactions', [])  # Parse the JSON data
             filtered_transactions = [transaction for transaction in transactions if
                                      transaction['quantity'] not in ('', '0')]
+            if not filtered_transactions:
+                return JsonResponse({'success': True})
 
             # print("Received JSON data:", data)
             # print("Filtered transactions:", filtered_transactions)

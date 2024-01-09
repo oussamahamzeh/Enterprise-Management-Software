@@ -1,69 +1,113 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
+<style>
+    body {
+        background-image: url('{% get_media_prefix %}/images/inventory_background.jpg');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center center;
+        color: white; /* Set text color to white */
+        margin: 0;
+        padding: 150px;
+    }
+    .card {
+        margin-top: 500px; /* Pushing the card down by 200px */
+        width: 50rem;
+        background-color: #333; /* Card background color */
+        color: white; /* Card text color */
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        margin: 0 auto; /* Centering the card horizontally */
+    }
+    .card-header {
+        background-color: #007bff; /* Header background color */
+        color: white; /* Header text color */
+        padding: 15px;
+        font-weight: bold;
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+    }
+    .card-body {
+        padding: 20px;
+    }
+    label {
+        color: white; /* Label text color */
+    }
+    input[type="number"],
+    input[type="text"],
+    select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        background-color: #555; /* Input background color */
+        color: white; /* Input text color */
+    }
+    input[type="submit"] {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 4px;
+        background-color: #007bff; /* Submit button background color */
+        color: white; /* Submit button text color */
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    input[type="submit"]:hover {
+        background-color: #0056b3; /* Hover background color */
+    }
+    .btn-secondary {
+        padding: 12px;
+        border: none;
+        border-radius: 4px;
+        background-color: #6c757d; /* Secondary button background color */
+        color: white; /* Secondary button text color */
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-top: 20px;
+    }
+    .btn-secondary:hover {
+        background-color: #495057; /* Hover background color for secondary button */
+    }
+</style>
 
-<center>
-<div class="card" style="width: 50rem;">
-<div class="card-body">
-<form action="{% url 'inventory:transferitm' item.item_id %}" method="post">
-<div class="card-header">TRANSFER {{ item.name }}</div>
-{% csrf_token %}
-<input type="hidden" name="item" value="{{ item.name }}">
-<div class="form-group">
-<label for="quantity">Quantity</label>
-<input type="number" class="form-control" value="1" id="quantity" name="quantity" min="1" max="{{ item.quantity }}" required/>
+
+<div class="card">
+    <div class="card-header">RETURN {{ item.name }}</div>
+    <div class="card-body">
+        <form action="{% url 'inventory:returnitm' item.item_id %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="item" value="{{ item.name }}">
+            <div class="form-group">
+                <label for="quantity">Quantity</label>
+                <input type="number" class="form-control" value="1" id="quantity" name="quantity" min="1" required/>
+            </div>
+            <div class="form-group">
+                <label for="client">Client</label>
+                <select name="client" class="form-control" id="client">
+                    {% for client in clients %}
+                        <option value="{{ client.name }}">{{ client.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="price">Selling Price</label>
+                <input type="text" class="form-control" id="selling_price" name="selling_price" value="{{ item.selling_price }}" required/>
+            </div>
+            <input type="submit" class="btn btn-primary" value="RETURN">
+        </form>
+    </div>
 </div>
-<div class="form-group">
-<label for="client">Client</label>
-<select name="client" class="form-control" id="client">
-{% for client in clients %}
-<option value="{{ client.name }}">{{ client.name }}</option>
-{% endfor %}
-</select>
-</div>
-<div class="form-group">
-<label for="price">Selling Price</label>
-<input type="text" class="form-control" id="selling_price" name="selling_price" value="{{ item.selling_price }}" required/>
-</div>
-<input type="submit" class="btn btn-primary" value="TRANSFER">
-</form>
-</div>
-</div>
-</center>
-<br/>
-<center>
-<div class="card" style="width: 50rem;">
-<div class="card-body">
-<form action="{% url 'inventory:returnitm' item.item_id %}" method="post">
-<div class="card-header">RETURN {{ item.name }}</div>
-{% csrf_token %}
-<input type="hidden" name="item" value="{{ item.name }}">
-<div class="form-group">
-<label for="quantity">Quantity</label>
-<input type="number" class="form-control" value="1" id="quantity" name="quantity" min="1" required/>
-</div>
-<div class="form-group">
-<label for="client">Client</label>
-<select name="client" class="form-control" id="client">
-{% for client in clients %}
-<option value="{{ client.name }}">{{ client.name }}</option>
-{% endfor %}
-</select>
-</div>
-<div class="form-group">
-<label for="price">Selling Price</label>
-<input type="text" class="form-control" id="selling_price" name="selling_price" value="{{ item.selling_price }}" required/>
-</div>
-<input type="submit" class="btn btn-primary" value="RETURN">
-</form>
-</div>
-</div>
-</center>
+
 <button onclick="goBack()" class="btn btn-secondary">Back</button>
 
 <script>
-function goBack() {
-  window.history.back();
-}
+    function goBack() {
+        window.history.back();
+    }
 </script>
 
 {% endblock %}
