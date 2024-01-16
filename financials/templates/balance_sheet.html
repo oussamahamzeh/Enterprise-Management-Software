@@ -31,6 +31,9 @@
     .filter-button {
         margin-top: 20px;
     }
+    .col-form-label {
+        font-weight: bold;
+    }
 </style>
 
 <div class="container">
@@ -41,23 +44,37 @@
 
     <form method="GET" class="mb-5">
         <div class="form-group row">
-        <label for="from_date" class="col-sm-2 col-form-label font-weight-bold">From Date:</label>
-        <div class="col-sm-4">
-          <input type="date" id="from_date" name="from_date" class="form-control" value="{{ from_date }}" />
+            <label for="from_date" class="col-sm-2 col-form-label font-weight-bold">From Date:</label>
+            <div class="col-sm-4">
+                <input type="date" id="from_date" name="from_date" class="form-control" value="{{ from_date }}" />
+            </div>
+            <label for="to_date" class="col-sm-2 col-form-label font-weight-bold">To Date:</label>
+            <div class="col-sm-4">
+                <input type="date" id="to_date" name="to_date" class="form-control" value="{{ to_date|default:today }}" />
+            </div>
         </div>
-        <label for="to_date" class="col-sm-2 col-form-label font-weight-bold">To Date:</label>
-        <div class="col-sm-4">
-          <input type="date" id="to_date" name="to_date" class="form-control" value="{{ to_date }}" />
-        </div>
-      </div>
 
-      <div class="row mb-3">
-        <div class="col-sm-12 text-center">
-            <button type="submit" class="btn btn-primary filter-button">Filter</button>
+        <div class="row mb-3">
+            <div class="col-sm-12 text-center">
+                <button type="submit" class="btn btn-primary filter-button">Filter</button>
+            </div>
         </div>
-      </div>
     </form>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var toDateInput = document.getElementById("to_date");
+
+            // Check if the "To Date" is not chosen
+            if (!toDateInput.value) {
+                // Set the default value to today's date
+                var today = new Date().toISOString().split('T')[0];
+                toDateInput.value = today;
+            }
+        });
+    </script>
 </div>
+
 
 <div class="container dark-container">
     <div class="row">

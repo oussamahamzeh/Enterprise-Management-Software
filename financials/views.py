@@ -34,6 +34,7 @@ from .models import Expense
 from openpyxl.styles import Font, Alignment
 from openpyxl.utils import get_column_letter
 from cashier.views import receipt
+from datetime import date
 
 @login_required
 def transaction_list(request):
@@ -145,6 +146,9 @@ def balance_sheet(request):
             'transactions_count': round(transactions_count,2),
             'quantity_sold': round(quantity_sold,2),
             'items_sold': items_sold,
+            'from_date': request.GET.get('from_date', ''),
+            'to_date': request.GET.get('to_date', ''),
+            'today': date.today().isoformat(),
         }
 
     return render(request, 'balance_sheet.html', context)

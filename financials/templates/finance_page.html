@@ -9,8 +9,12 @@
           background-attachment: fixed;
           background-position: center center;
           color: white; /* Set text color to white */
+          text-shadow: none; /* Text shadow for readability */
       }
+
+
   </style>
+
   <div class="jumbotron text-center">
     <h1>Welcome to Financials</h1>
     <p>View and manage financial transactions.</p>
@@ -19,7 +23,7 @@
   <div class="container">
     <div class="row">
       <div class="col-md-6">
-        <div class="card mb-4 box-shadow">
+        <div class="card mb-4">
           <div class="card-body">
             <h2 class="card-title">Transaction List</h2>
             <p class="card-text">View and manage financial transactions.</p>
@@ -29,7 +33,7 @@
       </div>
 
       <div class="col-md-6">
-        <div class="card mb-4 box-shadow">
+        <div class="card mb-4">
           <div class="card-body">
             <h2 class="card-title">Balance Sheet</h2>
             <p class="card-text">View your balance sheet.</p>
@@ -37,9 +41,7 @@
           </div>
         </div>
       </div>
-
     </div>
-
   </div>
 
 {% endblock %}
