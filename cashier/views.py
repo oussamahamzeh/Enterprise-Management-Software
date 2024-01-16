@@ -91,6 +91,7 @@ def create_transactions(request):
         return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
 
+@login_required
 def get_previous_counter(directory):
     counter_pattern = re.compile(r'Receipt_(\d+)\.xlsx')
     existing_counters = []
@@ -106,6 +107,7 @@ def get_previous_counter(directory):
         return 1
 
 
+@login_required
 def receipt(transactions):
     if transactions:
         print("Creating Receipt function!")
@@ -281,6 +283,7 @@ def receipt(transactions):
     else:
         return HttpResponse(status=400)  # Return an empty response with status code 400 (Bad Request)
 
+@login_required
 def line_split(name, max_width=24):
     # Split the item name into lines
     lines = []
@@ -308,7 +311,7 @@ def wholesale(request):
     # Handle item code search and item details fetching here
     return render(request, 'wholesale.html')
 
-
+@login_required
 def clear_results(request):
     if 'search_results' in request.session:
         del request.session['search_results']  # Clear the session key
@@ -316,7 +319,7 @@ def clear_results(request):
         return JsonResponse({'success': True})
     return JsonResponse({'success': False})
 
-
+@login_required
 def search_item(request):
     if request.method == 'POST':
         code_input = request.POST.get('code')
@@ -352,7 +355,7 @@ def search_item(request):
 
     return render(request, template_name, context)
 
-
+@login_required
 def print_receipt(path):
     # Open the saved file using the 'start' command on Windows
     try:
@@ -360,7 +363,7 @@ def print_receipt(path):
     except Exception as e:
         print(f"Error printing file: {e}")
 
-
+@login_required
 def wholesale_search_item(request):
     if request.method == 'POST':
         code_input = request.POST.get('code')
@@ -467,7 +470,7 @@ def wholesale_create_transactions(request):
     else:
         return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
-
+@login_required
 def wholesale_receipt(transactions):
     print("Creating Wholesale Receipt function!")
 

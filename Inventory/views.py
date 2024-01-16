@@ -28,7 +28,7 @@ from .forms import ItemForm
 def item_list(request):
     items = Item.objects.all().order_by('-item_id')
     return render(request, 'item_list.html', {'items': items})
-
+@login_required
 def item_create(request):
     if request.method == 'POST':
         form = ItemForm(request.POST)
@@ -38,7 +38,7 @@ def item_create(request):
     else:
         form = ItemForm()
     return render(request, 'item_create.html', {'form': form})
-
+@login_required
 def item_edit(request, item_id):
     item = get_object_or_404(Item, item_id=item_id)
     if request.method == 'POST':
@@ -49,7 +49,7 @@ def item_edit(request, item_id):
     else:
         form = ItemForm(instance=item)
     return render(request, 'item_edit.html', {'form': form})
-
+@login_required
 def item_delete(request, item_id):
     item = get_object_or_404(Item, item_id=item_id)
     if request.method == 'POST':

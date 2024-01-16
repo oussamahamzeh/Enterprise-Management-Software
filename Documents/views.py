@@ -25,7 +25,7 @@ def upload_document(request):
     categories = Category.objects.all()
     return render(request, 'upload_document.html', {'form': form, 'categories': categories})
 
-
+@login_required
 def document_delete(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
     if request.method == 'POST':

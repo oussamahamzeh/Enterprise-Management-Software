@@ -39,7 +39,7 @@ inf. Optimize the code. Especially the HTML. TEST ALL FUNCTIONALITIES!!!
 #DONE# Change create transaction button.
 #DONE# Prevent create transaction button to create a new receipt if no items are scanned.
 #DONE# Edit the tables, so they are easy to view and read with the background.
-22. add @login_required to all functions for security reasons.
+#DONE# add @login_required to all functions for security reasons.
 #DONE# Disable suggestion list from "Enter Item Code" field.
 24. Find copyright free background pictures. Edit the tables, so they are easy to view and read with the background.
 25. Configure GitHub Actions to build and test the project. Try Django workflow.

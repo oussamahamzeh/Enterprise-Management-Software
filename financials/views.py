@@ -76,7 +76,7 @@ def transaction_list(request):
     return render(request, 'transaction_list.html',
                   {'items': items, 'clients': clients, 'users': users, 'types': types, 'transactions': transactions})
 
-
+@login_required
 def balance_sheet(request):
     items = Item.objects.all()
     if request.method == 'GET':
