@@ -43,7 +43,7 @@ def create_transactions(request):
             # Now you can iterate through the transactions and perform the necessary actions
             for transaction in filtered_transactions:
 
-                client = Client.objects.get(name="Guest")
+                #client = Client.objects.get(name="Guest")
                 type = 'transfer'
                 try:
                     item = Item.objects.get(code=transaction['code'])
@@ -60,7 +60,7 @@ def create_transactions(request):
                 profit = ((item.selling_price - item.purchase_cost - item.shipping_cost) * int(quantity)) - discount
                 TVA = round(float(selling_price) * 0.11 * int(quantity), 2)
 
-                transaction = Transaction(quantity=quantity, item=item, client=client, selling_price=selling_price,
+                transaction = Transaction(quantity=quantity, item=item, selling_price=selling_price,
                                           user=request.user.username, discount=discount, type=type, profit=profit,
                                           TVA=TVA)
                 transaction.save()
@@ -183,6 +183,9 @@ def receipt(transactions):
                 temp_value = abs(float(transaction.item.selling_price) - float(transaction.selling_price))
                 worksheet.cell(row=row_num + added_rows, column=3, value=transaction.item.selling_price+temp_value)
                 worksheet.cell(row=row_num + added_rows, column=3, value=transaction.item.selling_price+temp_value).alignment = alignment
+            else:
+                worksheet.cell(row=row_num + added_rows, column=3, value=transaction.item.selling_price )
+                worksheet.cell(row=row_num + added_rows, column=3, value=transaction.item.selling_price ).alignment = alignment
             lines = line_split(transaction.item.name)
             for idx, line in enumerate(lines):
                 if idx != 0:
@@ -418,7 +421,7 @@ def wholesale_create_transactions(request):
             # Now you can iterate through the transactions and perform the necessary actions
             for transaction in filtered_transactions:
 
-                client = Client.objects.get(name="Guest")
+                #client = Client.objects.get(name="Guest")
                 type = 'wholesale'
                 try:
                     item = Item.objects.get(code=transaction['code'])
@@ -434,7 +437,7 @@ def wholesale_create_transactions(request):
                 profit = ((item.selling_price - item.purchase_cost - item.shipping_cost) * int(quantity)) - discount
                 TVA = round(float(selling_price) * 0.11 * int(quantity), 2)
 
-                transaction = Transaction(quantity=quantity, item=item, client=client, selling_price=selling_price,
+                transaction = Transaction(quantity=quantity, item=item, selling_price=selling_price,
                                           user=request.user.username, discount=discount, type=type, profit=profit,
                                           TVA=TVA)
                 transaction.save()

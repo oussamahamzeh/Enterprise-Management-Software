@@ -1,17 +1,80 @@
 <!-- item_edit.html -->
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
-  <h1>Edit Item</h1>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Save">
-<button onclick="goBack()" class="btn btn-secondary">Back</button>
+<style>
+    body {
+        background-image: url('{% get_media_prefix %}/images/inventory_background.jpg');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center center;
+        color: white; /* Set text color to white */
+        font-family: Arial, sans-serif; /* Use a specific font for better readability */
+        padding: 10px;
+    }
+    .form-wrapper {
+        padding-top: 10; /* Remove previous padding */
+        margin-top: -60px; /* Adjust the margin top */
+        color: white;
+    }
+    .form-field {
+        margin-bottom: 10px;
+    }
+    .form-label {
+        font-weight: bold;
+        margin-bottom: 8px;
+        display: block;
+        font-size: 16px;
+    }
+    .form-control {
+        width: calc(100% - 10px);
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        background-color: #f8f8f8;
+        transition: border-color 0.3s;
+    }
+    .form-control:focus {
+        outline: none;
+        border-color: #5cb85c;
+    }
+    .btn-primary {
+        margin-top: 20px;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 6px;
+        transition: background-color 0.3s;
+    }
+    .btn-primary:hover {
+        background-color: #5cb85c;
+    }
+</style>
+
+<div class="container form-wrapper">
+    <h1 class="text-center mt-5 mb-4">Edit Item</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                {% for field in form %}
+                    <div class="form-field">
+                        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                        {{ field }}
+                    </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </form>
+    <button onclick="goBack()" class="btn btn-secondary mt-3">Back</button>
+</div>
 
 <script>
-function goBack() {
-  window.history.back();
-}
+    function goBack() {
+        window.history.back();
+    }
 </script>
 
 {% endblock %}

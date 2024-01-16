@@ -1,41 +1,41 @@
 {% if transactions %}
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Selling Price</th>
+                    <th scope="col">Time</th>
+                    <th scope="col">Item</th>
+                    <th scope="col">Client</th>
+                    <th scope="col">User</th>
+                    <th scope="col">Discount</th>
+                    <th scope="col">Profit</th>
+                    <th scope="col">Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transactions %}
+                    <tr>
+                        <td>{{ transaction.quantity }}</td>
+                        <td>{{ transaction.selling_price }}</td>
+                        <td>{{ transaction.time|date:'Y-m-d H:i:s' }}</td>
+                        <td>{{ transaction.item.name }}</td>
+                        <td>{{ transaction.client.name }}</td>
+                        <td>{{ transaction.user }}</td>
+                        <td>{{ transaction.discount|floatformat:2}}</td>
+                        <td>{{ transaction.profit|floatformat:2 }}</td>
+                        <td>{{ transaction.type }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-  <table class="table">
-    <thead class="table-dark">
-      <tr>
-        <th scope="col">Quantity</th>
-        <th scope="col">Selling Price</th>
-        <th scope="col">Time</th>
-        <th scope="col">Item</th>
-        <th scope="col">Client</th>
-        <th scope="col">User</th>
-        <th scope="col">Discount</th>
-        <th scope="col">Profit</th>
-        <th scope="col">Type</th>
-
-      </tr>
-    </thead>
-    <tbody>
-      {% for transaction in transactions %}
-        <tr>
-          <td>{{ transaction.quantity }}</td>
-          <td>{{ transaction.selling_price }}</td>
-          <td>{{ transaction.time|date:'Y-m-d H:i:s' }}</td>
-          <td>{{ transaction.item.name }}</td>
-          <td>{{ transaction.client.name }}</td>
-          <td>{{ transaction.user }}</td>
-          <td>{{ transaction.discount|floatformat:2}}</td>
-          <td>{{ transaction.profit|floatformat:2 }}</td>
-          <td>{{ transaction.type }}</td>
-
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  <!-- Add this HTML code to create the Excel link -->
-  <div class="text-left mt-4">
-    <a href="{% url 'financials:transaction_list' %}?{{ request.GET.urlencode }}&export=excel" class="btn btn-primary">Export as Excel</a>
-  </div>
+    <!-- Add this HTML code to create the Excel link -->
+    <div class="text-left mt-4">
+        <a href="{% url 'financials:transaction_list' %}?{{ request.GET.urlencode }}&export=excel" class="btn btn-primary">Export as Excel</a>
+    </div>
 {% else %}
-  <p class="text-center">No transactions found.</p>
+    <p class="text-center">No transactions found.</p>
 {% endif %}

@@ -16,7 +16,7 @@ class Item(models.Model):
     name = models.CharField(max_length=50)
     company = models.CharField(max_length=120, blank=True, null=True)
     description = models.CharField(max_length=250, blank=True, null=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True)
     quantity = models.IntegerField(default=0)
     rebuy_till = models.IntegerField(default=0)
     purchase_cost = models.FloatField(default=0)
