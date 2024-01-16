@@ -33,7 +33,7 @@ inf. Optimize the code. Especially the HTML. TEST ALL FUNCTIONALITIES!!!
 #DONE# To date in the balance sheet is by default today if not given.
 14. Find a way to install the software without giving out the source code.
 15. Create a Subscription system to sell the software on a subscription basis.
-16. Allow the access of the same database from different computers.
+#DONE# Allow the access of the same database from different computers on the same Wi-Fi.
 17. Upgrade the cybersecurity.
 #DONE# If the discount is negative don't add it to the receipt.
 #DONE# Change create transaction button.

@@ -12,3 +12,5 @@ class CustomAdminSite(AdminSite):
 
 custom_admin_site = CustomAdminSite(name='custom_admin')
 custom_admin_site._registry = default_admin_site._registry
+
+
