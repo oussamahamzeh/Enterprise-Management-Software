@@ -8,7 +8,8 @@ charset-normalizer
 click
 colorama
 cymem
-Django
+decouple
+Django~=4.2.1
 docopt
 exceptiongroup
 hypothesis
@@ -19,7 +20,7 @@ langcodes
 MarkupSafe
 murmurhash
 numpy
-openpyxl
+openpyxl~=3.1.2
 packaging
 pathy==0.6.2
 pipreqs
@@ -29,6 +30,7 @@ py
 pydantic
 pyparsing
 pytest
+python-decouple
 requests
 smart-open
 sortedcontainers

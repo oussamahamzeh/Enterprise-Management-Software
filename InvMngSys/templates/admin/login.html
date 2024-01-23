@@ -1,0 +1,18 @@
+{% extends 'admin/login.html' %}
+
+{% load i18n %}
+
+{% block content %}
+    <div id="content-main" style="text-align: center;">
+        <h1 style="margin-bottom: 20px;">{% trans 'Log in' %}</h1>
+        {% if form.has_errors %}
+            <p class="errornote" style="color: red; margin-bottom: 10px;">{% trans "Please enter the correct username and password for a staff account. Note that both fields may be case-sensitive." %}</p>
+        {% endif %}
+        <form method="post" action="{% url 'admin:login' %}" id="login-form" style="max-width: 300px; margin: 0 auto;">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" class="login-button" value="{% trans 'Log in' %}" style="width: 100%; margin-top: 10px;">
+        </form>
+        <p style="margin-top: 10px;"><a href="{% url 'password_reset' %}">{% trans 'Forgot your password?' %}</a></p>
+    </div>
+{% endblock %}

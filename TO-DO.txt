@@ -15,6 +15,17 @@ Copy the images folder from Media
 
 ######################################################################################################################
 
+During installation
+Set up SMTP:
+Create the App passwords settings in your email and copy the code instead of the EMAIL_HOST_PASSWORD below
+EMAIL_HOST_PASSWORD = 'hjjt uufw ncuy gakg'
+Create a file named .env in your project directory and add your email and password
+EMAIL_HOST_USER=your-email@gmail.com
+EMAIL_HOST_PASSWORD=your-password
+
+
+
+
 TO-DO:
 inf. Optimize the code. Especially the HTML. TEST ALL FUNCTIONALITIES!!!
 
@@ -48,3 +59,7 @@ inf. Optimize the code. Especially the HTML. TEST ALL FUNCTIONALITIES!!!
 28. Store documents in new folders according to their id and delete the folder when deleting the document.
 #DONE# Client in transactions is not obligatory.
 #DONE# Fix the bug where sell price doesn't appear on the receipt.
+31. Create a management tab in the homepage and put documents in it and an HR page.
+32. Maybe implement Grafana for graphs and charts visualizations.
+33. Add the Invoice Number to the receipt
+34. Add the Total Quantity to the receipt

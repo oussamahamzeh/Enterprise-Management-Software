@@ -14,6 +14,8 @@ import os
 import socket
 from datetime import datetime
 import sys
+from decouple import config
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -24,8 +26,42 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '2iq%spo^d@aln1m$6os^)jcdg=1nfh!-ta88984^&p)&b!g7#*'
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': os.path.join(MEDIA_ROOT, 'logs', 'logfile.log'),
+            'when': 'midnight',
+            'interval': 1,
+            'backupCount': 32,  # Keep 32 days of logs
+            'formatter': 'verbose',
+        },
+    },
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
 
 
 # Get the IPv4 address dynamically
@@ -34,17 +70,6 @@ def get_local_ip():
     try:
         host_name = socket.gethostname()
         local_ip = socket.gethostbyname(host_name)
-        quit_command = "CTRL-C" if sys.platform == "win32" else "CONTROL-C"
-        default_port = "8000"
-        protocol = "http"
-        localhost = '127.0.0.1'
-        now = datetime.now().strftime("%B %d, %Y - %X")
-        print(
-            # f"{now}\n"
-            f"To reach the server Locally go to: {protocol}://{localhost}:{default_port}/\n"
-            f"To reach the server Remotely go to: {protocol}://{local_ip}:{default_port}/\n"
-            # f"Quit the server with {quit_command}."
-        )
         return local_ip
     except socket.error:
         print("Unable to get the IP")
@@ -160,5 +185,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/admin/login/'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+
+
+#SMTP
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_PASSWORD = 'hjjt uufw ncuy gakg'
+
+# Password reset settings
+PASSWORD_RESET_TIMEOUT = 259200  # 3 days in seconds
+PASSWORD_RESET_TIMEOUT_DAYS = 3  # 3 days

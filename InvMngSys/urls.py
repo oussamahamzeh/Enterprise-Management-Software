@@ -13,37 +13,29 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.contrib.admin import ModelAdmin
-from django.contrib.admin.options import BaseModelAdmin
-from django.urls import path, include
-from django.contrib.auth import views as auth_views
 
-import InvMngSys
-from Inventory import views
-from django.shortcuts import render
-from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
 from . import views
-from django.contrib import admin
 from InvMngSys.custom_admin import custom_admin_site
-from django.urls import path
-from django.contrib import admin
+from django.urls import path, include
+from django.contrib.auth import views as auth_views
+
+from .views import password_reset_confirm_custom
 
 urlpatterns = [
-                  path('', views.homepage, name='homepage'),
-                  # path('', TemplateView.as_view(template_name='homepage.html'), name='homepage'),
-                  path('admin/', custom_admin_site.urls),
-                  path('inventory/', include('Inventory.urls', namespace='inventory')),  # items/
-                  path('documents/', include('Documents.urls', namespace='documents')),  # documents/
-                  path('financials/', include('financials.urls', namespace='financials')),  # financials/
-                  path('cashier/', include('cashier.urls', namespace='cashier')),  # cashier/
-                  path('login/', auth_views.LoginView.as_view(), name='login'),
-                  # path('', include('django.contrib.auth.urls')),
+    path('', views.homepage, name='homepage'),
+    path('admin/', custom_admin_site.urls),
+    path('inventory/', include('Inventory.urls', namespace='inventory')),  # items/
+    path('documents/', include('Documents.urls', namespace='documents')),  # documents/
+    path('financials/', include('financials.urls', namespace='financials')),  # financials/
+    path('cashier/', include('cashier.urls', namespace='cashier')),  # cashier/
+    path('login/', auth_views.LoginView.as_view(), name='login'),
+    path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
+    path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
+    path('reset/<uidb64>/<token>/', password_reset_confirm_custom, name='password_reset_confirm'),
+    #path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+    path('invalid-link/', views.invalid_link, name='invalid_link'),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-                  # path('', include('django.contrib.auth.urls')),#accounts/
-                  # path('login/', views.login_view, name='login'),
-                  # path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
-                  # path('logout/', auth_views.LogoutView.as_view(), name='logout'),
-              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
