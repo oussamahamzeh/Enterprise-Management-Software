@@ -27,7 +27,7 @@ EMAIL_HOST_PASSWORD=your-password
 
 
 TO-DO:
-inf. Optimize the code. Especially the HTML. TEST ALL FUNCTIONALITIES!!!
+inf. Optimize the code. Especially the HTML. TEST ALL FUNCTIONALITIES. Go online!
 
 #DONE# Throw a pop-up warning window when the inventory quantity is below zero.
 #DONE# Prevent Wholesale from opening without login like the other pages.
@@ -37,29 +37,33 @@ inf. Optimize the code. Especially the HTML. TEST ALL FUNCTIONALITIES!!!
 #DONE# Delete the log files. Stop uploading them to the commits.
 #DONE# Remove the return page and add a return option to the inventory page.
 #DONE# Change the login page and the Django Dashboard to be original.
-9. Add a forgot my password option to send an email if there is a given email.
-10. Change the cashier & financials folder name to capital letters.
 #DONE# Add a different error page when trying to use the software without loggin in, or redirect it to the log in page.
 #DONE# Make the login page the homepage if not logged in, otherwise keep it as is.
 #DONE# To date in the balance sheet is by default today if not given.
-14. Find a way to install the software without giving out the source code.
-15. Create a Subscription system to sell the software on a subscription basis.
 #DONE# Allow the access of the same database from different computers on the same Wi-Fi.
-17. Upgrade the cybersecurity.
 #DONE# If the discount is negative don't add it to the receipt.
 #DONE# Change create transaction button.
 #DONE# Prevent create transaction button to create a new receipt if no items are scanned.
 #DONE# Edit the tables, so they are easy to view and read with the background.
 #DONE# add @login_required to all functions for security reasons.
 #DONE# Disable suggestion list from "Enter Item Code" field.
-24. Find copyright free background pictures. Edit the tables, so they are easy to view and read with the background.
-25. Configure GitHub Actions to build and test the project. Try Django workflow.
-26. Change the icon from the static folder.
 #DONE# Category in item creation is not obligatory. Plus the migrations.
-28. Store documents in new folders according to their id and delete the folder when deleting the document.
 #DONE# Client in transactions is not obligatory.
 #DONE# Fix the bug where sell price doesn't appear on the receipt.
-31. Create a management tab in the homepage and put documents in it and an HR page.
-32. Maybe implement Grafana for graphs and charts visualizations.
 #DONE# Add the Invoice Number to the receipt
 #DONE# Add the Total Quantity to the receipt
+[0.5] Store documents in new folders according to their id and delete the folder when deleting the document.
+[0.5] Change the cashier & financials folder name to capital letters.
+[0.5] Find copyright free background pictures. Edit the tables, so they are easy to view and read with the background.
+[0.5] Change the icon from the static folder.
+[0.5] Create a new Model, customer for me where I store the customer data and add the customer CODE to user object.
+[1] Create a management tab in the homepage and put documents in it and an HR page.
+[1] Add a forgot my password option to send an email if there is a given email.
+[1] Switch to MySQL
+[1] Use different database for each user company code
+[1] Create a Subscription system to sell the software on a subscription basis.
+11. Upgrade the cybersecurity?
+12. Implement Grafana for graphs and charts visualizations?
+[0.5] Create Demo account with Demo DB.
+[0.5] Create a checklist of what needs to change for each customer like receipts, DBs, My demo user, maybe html files, etc...
+[3] Create a local version of the project. (Keep the subscription, find a way to renew it remotely, hide the source code, remove the superuser creation function and other cracking methodes...)

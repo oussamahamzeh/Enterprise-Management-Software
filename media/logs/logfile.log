@@ -1,2 +1,2 @@
-DEBUG 2024-01-23 20:54:06,598 utils (0.000) SELECT "cashier_invoicenumber"."id", "cashier_invoicenumber"."value" FROM "cashier_invoicenumber" WHERE "cashier_invoicenumber"."id" = 1 LIMIT 21; args=(1,); alias=default
-DEBUG 2024-01-23 20:54:06,607 utils (0.016) UPDATE "cashier_invoicenumber" SET "value" = 0 WHERE "cashier_invoicenumber"."id" = 1; args=(0, 1); alias=default
+DEBUG 2024-01-23 22:16:11,338 utils (0.000) SELECT "cashier_invoicenumber"."id", "cashier_invoicenumber"."value" FROM "cashier_invoicenumber" WHERE "cashier_invoicenumber"."id" = 1 LIMIT 21; args=(1,); alias=default
+DEBUG 2024-01-23 22:16:11,348 utils (0.000) UPDATE "cashier_invoicenumber" SET "value" = 0 WHERE "cashier_invoicenumber"."id" = 1; args=(0, 1); alias=default
