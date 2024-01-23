@@ -18,9 +18,9 @@ from openpyxl.worksheet.page import PageMargins  # , PageSetup
 from django.contrib import messages
 
 from django.core.exceptions import ObjectDoesNotExist
+from .models import InvoiceNumber
 
 
-@login_required
 def create_transactions(request):
     print("Creating Transaction function!")
     transaction_list = []
@@ -43,7 +43,7 @@ def create_transactions(request):
             # Now you can iterate through the transactions and perform the necessary actions
             for transaction in filtered_transactions:
 
-                #client = Client.objects.get(name="Guest")
+                # client = Client.objects.get(name="Guest")
                 type = 'transfer'
                 try:
                     item = Item.objects.get(code=transaction['code'])
@@ -91,7 +91,6 @@ def create_transactions(request):
         return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
 
-@login_required
 def get_previous_counter(directory):
     counter_pattern = re.compile(r'Receipt_(\d+)\.xlsx')
     existing_counters = []
@@ -107,10 +106,15 @@ def get_previous_counter(directory):
         return 1
 
 
-@login_required
 def receipt(transactions):
     if transactions:
         print("Creating Receipt function!")
+
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        save_path = os.path.join(BASE_DIR, 'media/receipts')
+        # counter = get_previous_counter(save_path)
+
+        counter = InvoiceNumber.get_next_invoice_number()
 
         # Create a new workbook and worksheet
         workbook = openpyxl.Workbook()
@@ -155,6 +159,12 @@ def receipt(transactions):
         worksheet.cell(row=7, column=1, value="Date").alignment = alignment
         worksheet.cell(row=7, column=2, value=formatted_datetime)
 
+        worksheet.cell(row=8, column=1, value="Invoice No.")
+        worksheet.cell(row=8, column=1, value="Invoice No.").font = font
+        worksheet.cell(row=8, column=1, value="Invoice No.").alignment = alignment
+        worksheet.cell(row=8, column=2, value=counter)
+        worksheet.cell(row=8, column=2, value=counter).alignment = alignment
+
         # Adjust column width to fit the content
 
         column_letter = get_column_letter(1)  # Column A
@@ -167,7 +177,7 @@ def receipt(transactions):
         # worksheet.column_dimensions[column_letter].width = 12  # Adjust the width as needed
 
         for col_num, header_title in enumerate(headers, 1):
-            cell = worksheet.cell(row=9, column=col_num)
+            cell = worksheet.cell(row=10, column=col_num)
             cell.value = header_title
             cell.alignment = alignment
             cell.font = font
@@ -176,18 +186,22 @@ def receipt(transactions):
         added_rows = 0
         discount = 0
         rounded_discount = 0
+        total_quantity = 0
         # Write the transactions to the worksheet
-        for row_num, transaction in enumerate(transactions, 10):
+        for row_num, transaction in enumerate(transactions, 11):
             added_rows = added_rows + 1
             worksheet.cell(row=row_num + added_rows, column=2, value=transaction.quantity)
             worksheet.cell(row=row_num + added_rows, column=2, value=transaction.quantity).alignment = alignment
+            total_quantity += int(transaction.quantity)
             if transaction.discount < 0:
                 temp_value = abs(float(transaction.item.selling_price) - float(transaction.selling_price))
-                worksheet.cell(row=row_num + added_rows, column=3, value=transaction.item.selling_price+temp_value)
-                worksheet.cell(row=row_num + added_rows, column=3, value=transaction.item.selling_price+temp_value).alignment = alignment
+                worksheet.cell(row=row_num + added_rows, column=3, value=transaction.item.selling_price + temp_value)
+                worksheet.cell(row=row_num + added_rows, column=3,
+                               value=transaction.item.selling_price + temp_value).alignment = alignment
             else:
-                worksheet.cell(row=row_num + added_rows, column=3, value=transaction.item.selling_price )
-                worksheet.cell(row=row_num + added_rows, column=3, value=transaction.item.selling_price ).alignment = alignment
+                worksheet.cell(row=row_num + added_rows, column=3, value=transaction.item.selling_price)
+                worksheet.cell(row=row_num + added_rows, column=3,
+                               value=transaction.item.selling_price).alignment = alignment
             lines = line_split(transaction.item.name)
             for idx, line in enumerate(lines):
                 if idx != 0:
@@ -213,7 +227,7 @@ def receipt(transactions):
                     transaction.selling_price)).alignment = alignment
 
         total_sum = round(total_sum, 2)
-        final_row = len(transactions) + 9 + added_rows
+        final_row = len(transactions) + 10 + added_rows
         worksheet.cell(row=final_row + 2, column=1, value="Sub-total")
         worksheet.cell(row=final_row + 2, column=1, value="Sub-total").font = font
         worksheet.cell(row=final_row + 2, column=2, value=total_sum * 0.89)
@@ -226,10 +240,17 @@ def receipt(transactions):
         worksheet.cell(row=final_row + 5, column=1, value="Total").font = font
         worksheet.cell(row=final_row + 5, column=2, value=total_sum)
         worksheet.cell(row=final_row + 5, column=3, value="USD")
-        worksheet.cell(row=final_row + 8, column=1, value="        PLEASE VISIT US AGAIN")
-        worksheet.cell(row=final_row + 8, column=1, value="        PLEASE VISIT US AGAIN").font = font02
-        worksheet.cell(row=final_row + 9, column=1, value="                   Thank You!")
-        worksheet.cell(row=final_row + 9, column=1, value="                   Thank You!").font = font02
+        worksheet.cell(row=final_row + 6, column=1, value="Quantity")
+        worksheet.cell(row=final_row + 6, column=1, value="Quantity").font = font
+        worksheet.cell(row=final_row + 6, column=2, value=total_quantity)
+        if total_quantity == 1:
+            worksheet.cell(row=final_row + 6, column=3, value="Item")
+        else:
+            worksheet.cell(row=final_row + 6, column=3, value="Items")
+        worksheet.cell(row=final_row + 9, column=1, value="        PLEASE VISIT US AGAIN")
+        worksheet.cell(row=final_row + 9, column=1, value="        PLEASE VISIT US AGAIN").font = font02
+        worksheet.cell(row=final_row + 10, column=1, value="                   Thank You!")
+        worksheet.cell(row=final_row + 10, column=1, value="                   Thank You!").font = font02
 
         # Set print page options
         worksheet.print_options.horizontalCentered = True  # Center horizontally
@@ -266,9 +287,6 @@ def receipt(transactions):
         page_setup.fitToWidth = 1
 
         # Choose a directory to save the file
-        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        save_path = os.path.join(BASE_DIR, 'media/receipts')
-        counter = get_previous_counter(save_path)
         file_name = f'Receipt_{counter}.xlsx'
         full_file_path = os.path.join(save_path, file_name)
 
@@ -283,7 +301,7 @@ def receipt(transactions):
     else:
         return HttpResponse(status=400)  # Return an empty response with status code 400 (Bad Request)
 
-@login_required
+
 def line_split(name, max_width=24):
     # Split the item name into lines
     lines = []
@@ -311,7 +329,7 @@ def wholesale(request):
     # Handle item code search and item details fetching here
     return render(request, 'wholesale.html')
 
-@login_required
+
 def clear_results(request):
     if 'search_results' in request.session:
         del request.session['search_results']  # Clear the session key
@@ -319,7 +337,7 @@ def clear_results(request):
         return JsonResponse({'success': True})
     return JsonResponse({'success': False})
 
-@login_required
+
 def search_item(request):
     if request.method == 'POST':
         code_input = request.POST.get('code')
@@ -355,7 +373,7 @@ def search_item(request):
 
     return render(request, template_name, context)
 
-@login_required
+
 def print_receipt(path):
     # Open the saved file using the 'start' command on Windows
     try:
@@ -363,7 +381,7 @@ def print_receipt(path):
     except Exception as e:
         print(f"Error printing file: {e}")
 
-@login_required
+
 def wholesale_search_item(request):
     if request.method == 'POST':
         code_input = request.POST.get('code')
@@ -400,7 +418,6 @@ def wholesale_search_item(request):
     return render(request, template_name, context)
 
 
-@login_required
 def wholesale_create_transactions(request):
     print("Creating Wholesale Transaction function!")
     transaction_list = []
@@ -424,7 +441,7 @@ def wholesale_create_transactions(request):
             # Now you can iterate through the transactions and perform the necessary actions
             for transaction in filtered_transactions:
 
-                #client = Client.objects.get(name="Guest")
+                # client = Client.objects.get(name="Guest")
                 type = 'wholesale'
                 try:
                     item = Item.objects.get(code=transaction['code'])
@@ -470,9 +487,15 @@ def wholesale_create_transactions(request):
     else:
         return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
-@login_required
+
 def wholesale_receipt(transactions):
     print("Creating Wholesale Receipt function!")
+
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    save_path = os.path.join(BASE_DIR, 'media/receipts')
+    # counter = get_previous_counter(save_path)
+
+    counter = InvoiceNumber.get_next_invoice_number()
 
     # Create a new workbook and worksheet
     workbook = openpyxl.Workbook()
@@ -517,6 +540,12 @@ def wholesale_receipt(transactions):
     worksheet.cell(row=7, column=1, value="Date").alignment = alignment
     worksheet.cell(row=7, column=2, value=formatted_datetime)
 
+    worksheet.cell(row=8, column=1, value="Invoice No.")
+    worksheet.cell(row=8, column=1, value="Invoice No.").font = font
+    worksheet.cell(row=8, column=1, value="Invoice No.").alignment = alignment
+    worksheet.cell(row=8, column=2, value=counter)
+    worksheet.cell(row=8, column=2, value=counter).alignment = alignment
+
     # Adjust column width to fit the content
 
     column_letter = get_column_letter(1)  # Column A
@@ -529,7 +558,7 @@ def wholesale_receipt(transactions):
     # worksheet.column_dimensions[column_letter].width = 12  # Adjust the width as needed
 
     for col_num, header_title in enumerate(headers, 1):
-        cell = worksheet.cell(row=9, column=col_num)
+        cell = worksheet.cell(row=10, column=col_num)
         cell.value = header_title
         cell.alignment = alignment
         cell.font = font
@@ -538,11 +567,13 @@ def wholesale_receipt(transactions):
     added_rows = 0
     discount = 0
     rounded_discount = 0
+    total_quantity = 0
     # Write the transactions to the worksheet
-    for row_num, transaction in enumerate(transactions, 10):
+    for row_num, transaction in enumerate(transactions, 11):
         added_rows = added_rows + 1
         worksheet.cell(row=row_num + added_rows, column=2, value=transaction.quantity)
         worksheet.cell(row=row_num + added_rows, column=2, value=transaction.quantity).alignment = alignment
+        total_quantity += int(transaction.quantity)
         worksheet.cell(row=row_num + added_rows, column=3, value=transaction.selling_price)
         worksheet.cell(row=row_num + added_rows, column=3, value=transaction.selling_price).alignment = alignment
         lines = line_split(transaction.item.name)
@@ -555,7 +586,7 @@ def wholesale_receipt(transactions):
         total_sum = total_sum + (float(transaction.selling_price) * int(transaction.quantity))
 
     total_sum = round(total_sum, 2)
-    final_row = len(transactions) + 9 + added_rows
+    final_row = len(transactions) + 10 + added_rows
     worksheet.cell(row=final_row + 2, column=1, value="Sub-total")
     worksheet.cell(row=final_row + 2, column=1, value="Sub-total").font = font
     worksheet.cell(row=final_row + 2, column=2, value=total_sum * 0.89)
@@ -568,10 +599,17 @@ def wholesale_receipt(transactions):
     worksheet.cell(row=final_row + 5, column=1, value="Total").font = font
     worksheet.cell(row=final_row + 5, column=2, value=total_sum)
     worksheet.cell(row=final_row + 5, column=3, value="USD")
-    worksheet.cell(row=final_row + 8, column=1, value="        PLEASE VISIT US AGAIN")
-    worksheet.cell(row=final_row + 8, column=1, value="        PLEASE VISIT US AGAIN").font = font02
-    worksheet.cell(row=final_row + 9, column=1, value="                   Thank You!")
-    worksheet.cell(row=final_row + 9, column=1, value="                   Thank You!").font = font02
+    worksheet.cell(row=final_row + 6, column=1, value="Quantity")
+    worksheet.cell(row=final_row + 6, column=1, value="Quantity").font = font
+    worksheet.cell(row=final_row + 6, column=2, value=total_quantity)
+    if total_quantity == 1:
+        worksheet.cell(row=final_row + 6, column=3, value="Item")
+    else:
+        worksheet.cell(row=final_row + 6, column=3, value="Items")
+    worksheet.cell(row=final_row + 9, column=1, value="        PLEASE VISIT US AGAIN")
+    worksheet.cell(row=final_row + 9, column=1, value="        PLEASE VISIT US AGAIN").font = font02
+    worksheet.cell(row=final_row + 10, column=1, value="                   Thank You!")
+    worksheet.cell(row=final_row + 10, column=1, value="                   Thank You!").font = font02
 
     # Set print page options
     worksheet.print_options.horizontalCentered = True  # Center horizontally
@@ -608,9 +646,6 @@ def wholesale_receipt(transactions):
     page_setup.fitToWidth = 1
 
     # Choose a directory to save the file
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    save_path = os.path.join(BASE_DIR, 'media/receipts')
-    counter = get_previous_counter(save_path)
     file_name = f'Receipt_{counter}.xlsx'
     full_file_path = os.path.join(save_path, file_name)
 

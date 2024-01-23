@@ -36,7 +36,7 @@ from openpyxl.utils import get_column_letter
 from cashier.views import receipt
 from datetime import date
 
-@login_required
+
 def transaction_list(request):
     transactions = Transaction.objects.all().order_by('-trans_id')
     items = Item.objects.all()
@@ -76,7 +76,7 @@ def transaction_list(request):
     return render(request, 'transaction_list.html',
                   {'items': items, 'clients': clients, 'users': users, 'types': types, 'transactions': transactions})
 
-@login_required
+
 def balance_sheet(request):
     items = Item.objects.all()
     if request.method == 'GET':
@@ -135,16 +135,16 @@ def balance_sheet(request):
             net_profit = profit - internal_expenses
 
         context = {
-            'cash': round(cash,2),
-            'profit': round(profit,2),
-            'inventory_purchase_cost': round(inventory_purchase_cost,2),
-            'shipping_cost': round(shipping_cost,2),
-            'internal_expenses': round(internal_expenses,2),
-            'net_profit': round(net_profit,2),
-            'discounts': round(discounts,2),
-            'asset_value': round(asset_value,2),
-            'transactions_count': round(transactions_count,2),
-            'quantity_sold': round(quantity_sold,2),
+            'cash': round(cash, 2),
+            'profit': round(profit, 2),
+            'inventory_purchase_cost': round(inventory_purchase_cost, 2),
+            'shipping_cost': round(shipping_cost, 2),
+            'internal_expenses': round(internal_expenses, 2),
+            'net_profit': round(net_profit, 2),
+            'discounts': round(discounts, 2),
+            'asset_value': round(asset_value, 2),
+            'transactions_count': round(transactions_count, 2),
+            'quantity_sold': round(quantity_sold, 2),
             'items_sold': items_sold,
             'from_date': request.GET.get('from_date', ''),
             'to_date': request.GET.get('to_date', ''),

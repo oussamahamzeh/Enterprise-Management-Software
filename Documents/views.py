@@ -10,7 +10,7 @@ from django.shortcuts import render
 from .models import Document, Category
 from .forms import UploadDocumentForm
 
-@login_required
+
 def upload_document(request):
     if request.method == 'POST':
         form = UploadDocumentForm(request.POST, request.FILES)
@@ -25,7 +25,7 @@ def upload_document(request):
     categories = Category.objects.all()
     return render(request, 'upload_document.html', {'form': form, 'categories': categories})
 
-@login_required
+
 def document_delete(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
     if request.method == 'POST':
@@ -36,7 +36,7 @@ def document_delete(request, document_id):
         return redirect(reverse('documents:document_list'))
     return render(request, 'document_delete.html', {'document': document})
 
-@login_required
+
 def document_list(request):
     categories = Category.objects.all()
     selected_category = request.GET.get('category', None)
@@ -44,7 +44,9 @@ def document_list(request):
         documents = Document.objects.filter(category__category=selected_category)
     else:
         documents = Document.objects.all().order_by('-document_id')
-    return render(request, 'document_list.html', {'documents': documents, 'categories': categories, 'selected_category': selected_category})
+    return render(request, 'document_list.html',
+                  {'documents': documents, 'categories': categories, 'selected_category': selected_category})
+
 
 @login_required
 def page(request):

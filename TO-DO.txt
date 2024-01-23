@@ -61,5 +61,5 @@ inf. Optimize the code. Especially the HTML. TEST ALL FUNCTIONALITIES!!!
 #DONE# Fix the bug where sell price doesn't appear on the receipt.
 31. Create a management tab in the homepage and put documents in it and an HR page.
 32. Maybe implement Grafana for graphs and charts visualizations.
-33. Add the Invoice Number to the receipt
-34. Add the Total Quantity to the receipt
+#DONE# Add the Invoice Number to the receipt
+#DONE# Add the Total Quantity to the receipt
