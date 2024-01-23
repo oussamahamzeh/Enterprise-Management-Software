@@ -34,7 +34,7 @@ inf. Optimize the code. Especially the HTML. TEST ALL FUNCTIONALITIES!!!
 #DONE# Change the background of the cashier and wholesale and inventory to the ones in the image folder.
 #DONE# Find other backgrounds for the financials and documents pages.
 #DONE# Fix the rebuy list.
-6. Delete the log files. Stop uploading them to the commits.
+#DONE# Delete the log files. Stop uploading them to the commits.
 #DONE# Remove the return page and add a return option to the inventory page.
 #DONE# Change the login page and the Django Dashboard to be original.
 9. Add a forgot my password option to send an email if there is a given email.
