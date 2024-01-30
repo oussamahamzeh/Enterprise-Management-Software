@@ -33,6 +33,9 @@ MEDIA_URL = '/media/'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+if not os.path.join(MEDIA_ROOT, 'logs'):
+    # If it doesn't exist, create the directory
+    os.makedirs(os.path.join(MEDIA_ROOT, 'logs'))
 
 LOGGING = {
     'version': 1,

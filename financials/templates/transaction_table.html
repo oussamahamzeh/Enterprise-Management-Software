@@ -33,9 +33,13 @@
     </div>
 
     <!-- Add this HTML code to create the Excel link -->
-    <div class="text-left mt-4">
-        <a href="{% url 'financials:transaction_list' %}?{{ request.GET.urlencode }}&export=excel" class="btn btn-primary">Export as Excel</a>
-    </div>
+<div class="text-left mt-4">
+    <a href="{% url 'financials:transaction_list' %}?{{ request.GET.urlencode }}&export=excel" class="btn btn-primary">Export as Excel</a>
+</div>
+<div class="text-left mt-4">
+    <a href="{% url 'financials:transaction_list' %}?{{ request.GET.urlencode }}&export=pdf" class="btn btn-primary">Export as PDF</a>
+</div>
+
 {% else %}
     <p class="text-center">No transactions found.</p>
 {% endif %}

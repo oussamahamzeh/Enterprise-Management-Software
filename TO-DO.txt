@@ -77,3 +77,6 @@ inf. Optimize the code. Especially the HTML. TEST ALL FUNCTIONALITIES. Go online
 [0.5] add supplier info to the rebuy list
 [0.5] make the back button go to the main page not just the previous page
 [1] implement a remote update for the software
+[0.5] Edit the export_transactions function to include everything in the transactions and look good
+[0.5] Edit the export to pdf to fetch the last created excel and convert it to pdf
+[0.5] Move the export to excel and export to pdf buttons next to each other

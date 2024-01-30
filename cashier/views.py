@@ -111,8 +111,11 @@ def receipt(transactions):
         print("Creating Receipt function!")
 
         BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        save_path = os.path.join(BASE_DIR, 'media/receipts')
+        save_path = os.path.join(BASE_DIR, 'media/Receipts')
         # counter = get_previous_counter(save_path)
+        if not os.path.exists(save_path):
+            # If it doesn't exist, create the directory
+            os.makedirs(save_path)
 
         counter = InvoiceNumber.get_next_invoice_number()
 

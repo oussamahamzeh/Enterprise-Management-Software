@@ -31,6 +31,7 @@ pydantic
 pyparsing
 pytest
 python-decouple
+reportlab
 requests
 smart-open
 sortedcontainers
