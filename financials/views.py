@@ -1,35 +1,16 @@
 from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, get_object_or_404
-from Inventory.models import Transaction, Item, Client
-from datetime import datetime, timedelta
-
-from cashier.views import print_receipt, line_split
+from cashier.views import line_split
 from .models import Expense
-# from cashier.views import receipt
 from datetime import date
 from .models import TransactionExportNumber
-
-import json
 import os
-import re
-import subprocess
-import textwrap
-
 import openpyxl
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404
 from Inventory.models import Transaction, Item, Client
 from datetime import datetime, timedelta
 from openpyxl.styles import Font, Alignment
-from openpyxl.utils import get_column_letter, units
-from django.http import JsonResponse
-from openpyxl.worksheet.page import PageMargins  # , PageSetup
-# from openpyxl.worksheet.print_options import PrintPageSetup
-from django.contrib import messages
-
-from django.core.exceptions import ObjectDoesNotExist
 
 
 def export_transactions(transactions):
@@ -48,7 +29,7 @@ def export_transactions(transactions):
         # Apply center alignment to the cell
         alignment = Alignment(horizontal='center', vertical='center')
 
-        font = Font(name='Arial', size=12, bold=True, italic=False)  # , color="0033CC")  # Customize font settings
+        font = Font(name='Arial', size=11, bold=True, italic=False)  # , color="0033CC")  # Customize font settings
         font02 = Font(name='Arial', size=12, bold=True, italic=True)  # , color="0033CC")  # Customize font settings
 
         # Load the template workbook

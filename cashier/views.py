@@ -16,9 +16,10 @@ from django.http import JsonResponse
 from openpyxl.worksheet.page import PageMargins  # , PageSetup
 # from openpyxl.worksheet.print_options import PrintPageSetup
 from django.contrib import messages
-
+from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
 from .models import InvoiceNumber
+from openpyxl.worksheet.page import PrintPageSetup
 
 
 def create_transactions(request):
@@ -111,7 +112,9 @@ def receipt(transactions):
         print("Creating Receipt function!")
 
         BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        template_path = os.path.join(BASE_DIR, 'media/Templates/receipt_template.xlsx')
         save_path = os.path.join(BASE_DIR, 'media/Receipts')
+
         # counter = get_previous_counter(save_path)
         if not os.path.exists(save_path):
             # If it doesn't exist, create the directory
@@ -119,52 +122,21 @@ def receipt(transactions):
 
         counter = InvoiceNumber.get_next_invoice_number()
 
-        # Create a new workbook and worksheet
-        workbook = openpyxl.Workbook()
-        worksheet = workbook.active
-
-        # Write the headers to the worksheet
-        headers = ['Item', 'Quantity', 'Price']
+        template_workbook = openpyxl.load_workbook(template_path)
+        worksheet = template_workbook[template_workbook.sheetnames[0]]
 
         # Apply center alignment to the cell
         alignment = Alignment(horizontal='center', vertical='center')
-        alignment02 = Alignment(horizontal='right', vertical='center')
-
-        font = Font(name='Arial', size=16, bold=True, italic=False)  # , color="0033CC")  # Customize font settings
+        font = Font(name='Arial', size=11, bold=True, italic=False)  # , color="0033CC")  # Customize font settings
         font02 = Font(name='Arial', size=12, bold=True, italic=True)  # , color="0033CC")  # Customize font settings
-
-        cell01 = worksheet.cell(row=1, column=1, value="  Hamzeh Group - Fixtec")
-        cell01.font = font
-
-        # Apply bold font style
-        font = Font(bold=True)
-
-        worksheet.cell(row=2, column=1, value="           Main Road, Semqanieh, El-Shouf")
-        worksheet.cell(row=2, column=1, value="           Main Road, Semqanieh, El-Shouf").font = font
-
-        worksheet.cell(row=3, column=1, value="                    Near Samir's Bookshop")
-        worksheet.cell(row=3, column=1, value="                    Near Samir's Bookshop").font = font
-
-        worksheet.cell(row=4, column=1, value="               Tel: 25-566840  /  03-280478")
-        worksheet.cell(row=4, column=1, value="               Tel: 25-566840  /  03-280478").font = font
-
-        worksheet.cell(row=5, column=1, value="           Email: grouphamzeh@gmail.com")
-        worksheet.cell(row=5, column=1, value="           Email: grouphamzeh@gmail.com").font = font
 
         # Get the current datetime
         current_datetime = datetime.now()
 
         # Format the datetime as a string
         formatted_datetime = current_datetime.strftime('%Y-%m-%d %H:%M:%S')
-
-        worksheet.cell(row=7, column=1, value="Date")
-        worksheet.cell(row=7, column=1, value="Date").font = font
-        worksheet.cell(row=7, column=1, value="Date").alignment = alignment
         worksheet.cell(row=7, column=2, value=formatted_datetime)
 
-        worksheet.cell(row=8, column=1, value="Invoice No.")
-        worksheet.cell(row=8, column=1, value="Invoice No.").font = font
-        worksheet.cell(row=8, column=1, value="Invoice No.").alignment = alignment
         worksheet.cell(row=8, column=2, value=counter)
         worksheet.cell(row=8, column=2, value=counter).alignment = alignment
 
@@ -173,25 +145,14 @@ def receipt(transactions):
         column_letter = get_column_letter(1)  # Column A
         worksheet.column_dimensions[column_letter].width = 20  # Adjust the width as needed
 
-        # column_letter = get_column_letter(3)  # Column C
-        # worksheet.column_dimensions[column_letter].width = 10  # Adjust the width as needed
-
-        # column_letter = get_column_letter(5)  # Column E
-        # worksheet.column_dimensions[column_letter].width = 12  # Adjust the width as needed
-
-        for col_num, header_title in enumerate(headers, 1):
-            cell = worksheet.cell(row=10, column=col_num)
-            cell.value = header_title
-            cell.alignment = alignment
-            cell.font = font
-
+        data_start_row = 11
         total_sum = 0
         added_rows = 0
         discount = 0
         rounded_discount = 0
         total_quantity = 0
         # Write the transactions to the worksheet
-        for row_num, transaction in enumerate(transactions, 11):
+        for row_num, transaction in enumerate(transactions, data_start_row):
             added_rows = added_rows + 1
             worksheet.cell(row=row_num + added_rows, column=2, value=transaction.quantity)
             worksheet.cell(row=row_num + added_rows, column=2, value=transaction.quantity).alignment = alignment
@@ -259,9 +220,6 @@ def receipt(transactions):
         worksheet.print_options.horizontalCentered = True  # Center horizontally
         worksheet.print_options.verticalCentered = False  # Optional: Center vertically
         worksheet.page_setup.orientation = worksheet.ORIENTATION_PORTRAIT  # Portrait orientation
-        # worksheet.page_setup.fitToPage = True  # Fit to page
-        # worksheet.page_setup.fitToHeight = 0  # Fit to page height
-        # worksheet.page_setup.fitToWidth = 1  # Fit to page width
 
         # Set print area
         rows_to_print = final_row + 12
@@ -269,36 +227,27 @@ def receipt(transactions):
         worksheet.print_area = print_area
 
         # Set custom page size in millimeters
-        # custom_page_width_mm = 60
-        # custom_page_height_mm = min(110 + ((len(transactions) + added_rows) * 6), 210)
         worksheet.page_setup.paperSize = 0x11  # Custom paper size code for Excel (see below)
-        # worksheet.page_setup.pageWidth = custom_page_width_mm * 0.0393701  # Convert to inches
-        # worksheet.page_setup.pageHeight = custom_page_height_mm * 0.0393701  # Convert to inches
+
 
         # Set page margins
         page_margins = PageMargins(left=0, right=0, top=0, bottom=0, header=0, footer=0)
         worksheet.page_margins = page_margins
 
-        # Set print page setup to center horizontally
-        # print_page_setup = PrintPageSetup(horizontalCentered=True)
-        # worksheet.print_page_setup = print_page_setup
-
         # Apply page setup for "Fit to One Page"
-        page_setup = worksheet.page_setup
-        page_setup.fitToPage = True
-        page_setup.fitToHeight = 1
-        page_setup.fitToWidth = 1
+        #page_setup = worksheet.page_setup or PrintPageSetup()
+        worksheet.print_options.fitToPage = True
+        worksheet.print_options.fitToHeight = 1
+        worksheet.print_options.fitToWidth = 1
 
         # Choose a directory to save the file
         file_name = f'Receipt_{counter}.xlsx'
         full_file_path = os.path.join(save_path, file_name)
 
         # Save the workbook to the chosen location
-        workbook.save(full_file_path)
+        template_workbook.save(full_file_path)
 
         print_receipt(full_file_path)
-
-        # worksheet.PrintOut()  # Print the entire workbook
 
         return HttpResponse(status=204)  # Return an empty response with status code 204 (No Content)
     else:
@@ -495,84 +444,47 @@ def wholesale_receipt(transactions):
     print("Creating Wholesale Receipt function!")
 
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    save_path = os.path.join(BASE_DIR, 'media/receipts')
+    template_path = os.path.join(BASE_DIR, 'media/Templates/wholesale_template.xlsx')
+    save_path = os.path.join(BASE_DIR, 'media/Receipts')
     # counter = get_previous_counter(save_path)
+
+    if not os.path.exists(save_path):
+        # If it doesn't exist, create the directory
+        os.makedirs(save_path)
 
     counter = InvoiceNumber.get_next_invoice_number()
 
     # Create a new workbook and worksheet
-    workbook = openpyxl.Workbook()
-    worksheet = workbook.active
-
-    # Write the headers to the worksheet
-    headers = ['Item', 'Quantity', 'Price']
+    template_workbook = openpyxl.load_workbook(template_path)
+    worksheet = template_workbook[template_workbook.sheetnames[0]]
 
     # Apply center alignment to the cell
     alignment = Alignment(horizontal='center', vertical='center')
-    alignment02 = Alignment(horizontal='right', vertical='center')
-
-    font = Font(name='Arial', size=16, bold=True, italic=False)  # , color="0033CC")  # Customize font settings
+    font = Font(name='Arial', size=11, bold=True, italic=False)  # , color="0033CC")  # Customize font settings
     font02 = Font(name='Arial', size=12, bold=True, italic=True)  # , color="0033CC")  # Customize font settings
-
-    cell01 = worksheet.cell(row=1, column=1, value="  Hamzeh Group - Fixtec")
-    cell01.font = font
-
-    # Apply bold font style
-    font = Font(bold=True)
-
-    worksheet.cell(row=2, column=1, value="           Main Road, Semqanieh, El-Shouf")
-    worksheet.cell(row=2, column=1, value="           Main Road, Semqanieh, El-Shouf").font = font
-
-    worksheet.cell(row=3, column=1, value="                    Near Samir's Bookshop")
-    worksheet.cell(row=3, column=1, value="                    Near Samir's Bookshop").font = font
-
-    worksheet.cell(row=4, column=1, value="               Tel: 25-566840  /  03-280478")
-    worksheet.cell(row=4, column=1, value="               Tel: 25-566840  /  03-280478").font = font
-
-    worksheet.cell(row=5, column=1, value="           Email: grouphamzeh@gmail.com")
-    worksheet.cell(row=5, column=1, value="           Email: grouphamzeh@gmail.com").font = font
 
     # Get the current datetime
     current_datetime = datetime.now()
 
     # Format the datetime as a string
     formatted_datetime = current_datetime.strftime('%Y-%m-%d %H:%M:%S')
-
-    worksheet.cell(row=7, column=1, value="Date")
-    worksheet.cell(row=7, column=1, value="Date").font = font
-    worksheet.cell(row=7, column=1, value="Date").alignment = alignment
     worksheet.cell(row=7, column=2, value=formatted_datetime)
 
-    worksheet.cell(row=8, column=1, value="Invoice No.")
-    worksheet.cell(row=8, column=1, value="Invoice No.").font = font
-    worksheet.cell(row=8, column=1, value="Invoice No.").alignment = alignment
     worksheet.cell(row=8, column=2, value=counter)
     worksheet.cell(row=8, column=2, value=counter).alignment = alignment
 
     # Adjust column width to fit the content
-
     column_letter = get_column_letter(1)  # Column A
     worksheet.column_dimensions[column_letter].width = 20  # Adjust the width as needed
 
-    # column_letter = get_column_letter(3)  # Column C
-    # worksheet.column_dimensions[column_letter].width = 10  # Adjust the width as needed
-
-    # column_letter = get_column_letter(5)  # Column E
-    # worksheet.column_dimensions[column_letter].width = 12  # Adjust the width as needed
-
-    for col_num, header_title in enumerate(headers, 1):
-        cell = worksheet.cell(row=10, column=col_num)
-        cell.value = header_title
-        cell.alignment = alignment
-        cell.font = font
-
+    data_start_row = 11
     total_sum = 0
     added_rows = 0
     discount = 0
     rounded_discount = 0
     total_quantity = 0
     # Write the transactions to the worksheet
-    for row_num, transaction in enumerate(transactions, 11):
+    for row_num, transaction in enumerate(transactions, data_start_row):
         added_rows = added_rows + 1
         worksheet.cell(row=row_num + added_rows, column=2, value=transaction.quantity)
         worksheet.cell(row=row_num + added_rows, column=2, value=transaction.quantity).alignment = alignment
@@ -618,9 +530,6 @@ def wholesale_receipt(transactions):
     worksheet.print_options.horizontalCentered = True  # Center horizontally
     worksheet.print_options.verticalCentered = False  # Optional: Center vertically
     worksheet.page_setup.orientation = worksheet.ORIENTATION_PORTRAIT  # Portrait orientation
-    # worksheet.page_setup.fitToPage = True  # Fit to page
-    # worksheet.page_setup.fitToHeight = 0  # Fit to page height
-    # worksheet.page_setup.fitToWidth = 1  # Fit to page width
 
     # Set print area
     rows_to_print = final_row + 12
@@ -628,33 +537,23 @@ def wholesale_receipt(transactions):
     worksheet.print_area = print_area
 
     # Set custom page size in millimeters
-    # custom_page_width_mm = 60
-    # custom_page_height_mm = min(110 + ((len(transactions) + added_rows) * 6), 210)
     worksheet.page_setup.paperSize = 0x11  # Custom paper size code for Excel (see below)
-    # worksheet.page_setup.pageWidth = custom_page_width_mm * 0.0393701  # Convert to inches
-    # worksheet.page_setup.pageHeight = custom_page_height_mm * 0.0393701  # Convert to inches
 
     # Set page margins
     page_margins = PageMargins(left=0, right=0, top=0, bottom=0, header=0, footer=0)
     worksheet.page_margins = page_margins
 
-    # Set print page setup to center horizontally
-    # print_page_setup = PrintPageSetup(horizontalCentered=True)
-    # worksheet.print_page_setup = print_page_setup
-
     # Apply page setup for "Fit to One Page"
-    page_setup = worksheet.page_setup
-    page_setup.fitToPage = True
-    page_setup.fitToHeight = 1
-    page_setup.fitToWidth = 1
+    worksheet.print_options.fitToPage = True
+    worksheet.print_options.fitToHeight = 1
+    worksheet.print_options.fitToWidth = 1
 
     # Choose a directory to save the file
     file_name = f'Receipt_{counter}.xlsx'
     full_file_path = os.path.join(save_path, file_name)
 
     # Save the workbook to the chosen location
-    workbook.save(full_file_path)
-
+    template_workbook.save(full_file_path)
     print_receipt(full_file_path)
 
     # worksheet.PrintOut()  # Print the entire workbook
