@@ -11,9 +11,30 @@ from django.shortcuts import render, get_object_or_404
 from Inventory.models import Transaction, Item, Client
 from datetime import datetime, timedelta
 from openpyxl.styles import Font, Alignment
+import pyexcelerate
+import comtypes.client
+from openpyxl import load_workbook
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+import pyexcel as pe
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen.canvas import Canvas
+
+from openpyxl import load_workbook
+from fpdf import FPDF
+
+from pyexcelerate import Workbook
 
 
-def export_transactions(transactions):
+def save_workbook_as_pdf(workbook, output_pdf_path):
+    pass
+
+
+def convert_excel_to_pdf(input_excel, output_pdf):
+    pass
+
+
+def export_transactions(transactions, export_type):
     if transactions:
         print("Exporting Transactions!")
 
@@ -120,6 +141,15 @@ def export_transactions(transactions):
         full_file_path = os.path.join(save_path, file_name)
         template_workbook.save(full_file_path)
 
+        if export_type == "pdf":
+            # Convert Excel to PDF using comtypes
+            pdf_file_path = os.path.join(save_path, f'Export_{counter}.pdf')
+
+            convert_excel_to_pdf(input_excel=full_file_path, output_pdf=pdf_file_path)
+            save_workbook_as_pdf(template_workbook,pdf_file_path)
+            # Remove the original Excel file
+            os.remove(full_file_path)
+
         return HttpResponse(status=204)
     else:
         return HttpResponse(status=400)
@@ -162,10 +192,10 @@ def transaction_list(request):
         export_type = request.GET.get('export')
         if export_type == 'excel':
             # Perform actions for Excel export (a)
-            export_transactions(transactions)
+            export_transactions(transactions, export_type)
         elif export_type == 'pdf':
             # Perform actions for PDF export (b)
-            export_transactions(transactions)
+            export_transactions(transactions, export_type)
 
     return render(request, 'transaction_list.html',
                   {'items': items, 'clients': clients, 'users': users, 'types': types, 'transactions': transactions})

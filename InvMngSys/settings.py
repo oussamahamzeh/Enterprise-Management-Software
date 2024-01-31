@@ -14,7 +14,8 @@ import os
 import socket
 from datetime import datetime
 import sys
-from decouple import config
+
+from dotenv import load_dotenv
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -28,7 +29,6 @@ SECRET_KEY = '2iq%spo^d@aln1m$6os^)jcdg=1nfh!-ta88984^&p)&b!g7#*'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
-
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -79,8 +79,6 @@ def get_local_ip():
         return '127.0.0.1'
 
 
-
-
 # Change the first ip using cmd: ipconfig and copy the IPv4 Address
 # Access locally with: http://127.0.0.1:8000/
 # Access through the same Wi-Fi with 192.168.0.109:8000
@@ -100,6 +98,7 @@ INSTALLED_APPS = [
     'financials.apps.FinancialsConfig',
     'cashier',
     'mathfilters',
+    'dashboard',
 ]
 
 MIDDLEWARE = [
@@ -188,15 +187,16 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/admin/login/'
 
-
-
-#SMTP
+load_dotenv()
+# SMTP
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+#EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+#EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_HOST_PASSWORD = 'hjjt uufw ncuy gakg'
 
 # Password reset settings

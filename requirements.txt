@@ -7,9 +7,10 @@ certifi
 charset-normalizer
 click
 colorama
+comtypes~=1.2.1
 cymem
 decouple
-Django~=4.2.1
+Django
 docopt
 exceptiongroup
 hypothesis
@@ -28,10 +29,11 @@ pluggy
 preshed
 py
 pydantic
+pyexcelerate~=0.10.0
 pyparsing
 pytest
 python-decouple
-reportlab
+reportlab~=4.0.9
 requests
 smart-open
 sortedcontainers
@@ -49,3 +51,7 @@ tzdata
 urllib3
 wasabi
 yarg
+
+pyexcel~=0.7.0
+fpdf~=1.7.2
+python-dotenv~=1.0.1

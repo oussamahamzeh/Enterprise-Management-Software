@@ -16,26 +16,28 @@ Including another URLconf
 
 from django.conf import settings
 from django.conf.urls.static import static
+
+from dashboard.views import dashboard_view
 from . import views
 from InvMngSys.custom_admin import custom_admin_site
-from django.urls import path, include
 from django.contrib.auth import views as auth_views
-
+from django.urls import path, include
 from .views import password_reset_confirm_custom
 
 urlpatterns = [
-    path('', views.homepage, name='homepage'),
-    path('admin/', custom_admin_site.urls),
-    path('inventory/', include('Inventory.urls', namespace='inventory')),  # items/
-    path('documents/', include('Documents.urls', namespace='documents')),  # documents/
-    path('financials/', include('financials.urls', namespace='financials')),  # financials/
-    path('cashier/', include('cashier.urls', namespace='cashier')),  # cashier/
-    path('login/', auth_views.LoginView.as_view(), name='login'),
-    path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
-    path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
-    path('reset/<uidb64>/<token>/', password_reset_confirm_custom, name='password_reset_confirm'),
-    #path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
-    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
-    path('invalid-link/', views.invalid_link, name='invalid_link'),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+                  # path('', views.homepage, name='homepage'),
+                  path('', dashboard_view, name='dashboard_redirect'),  # Redirect from root to dashboard
+                  path('admin/', custom_admin_site.urls),
+                  path('inventory/', include('Inventory.urls', namespace='inventory')),  # items/
+                  path('documents/', include('Documents.urls', namespace='documents')),  # documents/
+                  path('financials/', include('financials.urls', namespace='financials')),  # financials/
+                  path('cashier/', include('cashier.urls', namespace='cashier')),  # cashier/
+                  path('login/', auth_views.LoginView.as_view(), name='login'),
+                  path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
+                  path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
+                  path('reset/<uidb64>/<token>/', password_reset_confirm_custom, name='password_reset_confirm'),
+                  # path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+                  path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+                  path('invalid-link/', views.invalid_link, name='invalid_link'),
 
+              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
