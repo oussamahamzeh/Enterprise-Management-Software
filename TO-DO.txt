@@ -56,8 +56,9 @@ inf. Optimize the code. Especially the HTML. TEST ALL FUNCTIONALITIES. Go online
 #OBSOLETE# Move the export to excel and export to pdf buttons next to each other
 #OBSOLETE# Implement Grafana for graphs and charts visualizations?
 #OBSOLETE# Find copyright free background pictures. Edit the tables, so they are easy to view and read with the background.
+#DONE# Store documents in new folders according to their id and delete the folder when deleting the document.
 [4] Create a cool dashboard!!!
-[0.5] Store documents in new folders according to their id and delete the folder when deleting the document.
+[0.5] Fix the double incrementation of the document id counter.
 [0.5] Change the Documents & Inventory folder names to small letters.
 [0.5] Change the icon from the static folder.
 [0.5] Create a new Model, customer for me where I store the customer data and add the customer CODE to user object.

@@ -1,4 +1,8 @@
+import os
+
 from django.shortcuts import render, redirect, reverse, get_object_or_404
+
+from InvMngSys.settings import MEDIA_ROOT
 from .forms import DocumentForm
 from .models import Document
 from django.views.decorators.http import require_POST
@@ -30,9 +34,6 @@ def document_delete(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
     if request.method == 'POST':
         document.delete()
-        documents = Document.objects.all()
-        categories = Category.objects.all()
-        selected_category = request.GET.get('category', None)
         return redirect(reverse('documents:document_list'))
     return render(request, 'document_delete.html', {'document': document})
 
