@@ -14,9 +14,8 @@ import os
 import socket
 from datetime import datetime
 import sys
-
+import threading
 from dotenv import load_dotenv
-
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -33,9 +32,13 @@ MEDIA_URL = '/media/'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-if not os.path.join(MEDIA_ROOT, 'logs'):
-    # If it doesn't exist, create the directory
-    os.makedirs(os.path.join(MEDIA_ROOT, 'logs'))
+# Create a lock for directory creation
+directory_creation_lock = threading.Lock()
+
+with directory_creation_lock:
+    if not os.path.exists(os.path.join(MEDIA_ROOT, 'logs')):
+        # If it doesn't exist, create the directory
+        os.makedirs(os.path.join(MEDIA_ROOT, 'logs'))
 
 LOGGING = {
     'version': 1,
@@ -43,11 +46,13 @@ LOGGING = {
     'handlers': {
         'file': {
             'level': 'DEBUG',
-            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'class': 'logging.handlers.WatchedFileHandler',  # Change here
             'filename': os.path.join(MEDIA_ROOT, 'logs', 'logfile.log'),
-            'when': 'midnight',
-            'interval': 1,
-            'backupCount': 32,  # Keep 32 days of logs
+            'formatter': 'verbose',
+        },
+        'console': {
+            'class': 'logging.StreamHandler',
+            'level': 'INFO',
             'formatter': 'verbose',
         },
     },
@@ -59,7 +64,7 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'handlers': ['file'],
+            'handlers': ['file', 'console'],
             'level': 'DEBUG',
             'propagate': True,
         },
@@ -109,6 +114,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
@@ -193,8 +199,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-#EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-#EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+# EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_HOST_PASSWORD = 'hjjt uufw ncuy gakg'
@@ -202,3 +208,5 @@ EMAIL_HOST_PASSWORD = 'hjjt uufw ncuy gakg'
 # Password reset settings
 PASSWORD_RESET_TIMEOUT = 259200  # 3 days in seconds
 PASSWORD_RESET_TIMEOUT_DAYS = 3  # 3 days
+
+SESSION_ENGINE = "django.contrib.sessions.backends.db"  # or "django.contrib.sessions.backends.cache", etc.

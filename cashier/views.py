@@ -3,11 +3,13 @@ import os
 import re
 import subprocess
 import textwrap
-
+import logging
 import openpyxl
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import render, get_object_or_404, redirect
+
+from InvMngSys.settings import MEDIA_ROOT
 from Inventory.models import Transaction, Item, Client
 from datetime import datetime, timedelta
 from openpyxl.styles import Font, Alignment
@@ -20,6 +22,9 @@ from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
 from .models import InvoiceNumber
 from openpyxl.worksheet.page import PrintPageSetup
+from django.http import JsonResponse
+
+logger = logging.getLogger(__name__)
 
 
 def create_transactions(request):
@@ -229,13 +234,12 @@ def receipt(transactions):
         # Set custom page size in millimeters
         worksheet.page_setup.paperSize = 0x11  # Custom paper size code for Excel (see below)
 
-
         # Set page margins
         page_margins = PageMargins(left=0, right=0, top=0, bottom=0, header=0, footer=0)
         worksheet.page_margins = page_margins
 
         # Apply page setup for "Fit to One Page"
-        #page_setup = worksheet.page_setup or PrintPageSetup()
+        # page_setup = worksheet.page_setup or PrintPageSetup()
         worksheet.print_options.fitToPage = True
         worksheet.print_options.fitToHeight = 1
         worksheet.print_options.fitToWidth = 1
@@ -293,7 +297,7 @@ def clear_results(request):
 def search_item(request):
     if request.method == 'POST':
         code_input = request.POST.get('code')
-        quantity = int(request.POST.get('quantity'))  # Default to 1 if not provided
+        quantity = int(request.POST.get('quantity', 1))  # Default to 1 if not provided
         items = Item.objects.filter(code=code_input)
 
         if 'search_results' not in request.session:
@@ -324,6 +328,37 @@ def search_item(request):
     template_name = 'cashier.html'
 
     return render(request, template_name, context)
+
+
+def update_results(request):
+    logger.info("update_results view called!")
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body.decode('utf-8'))  # Decode the JSON data
+            field_name = data.get('field')
+            field_value = data.get('value')
+            item_code = data.get('code')
+            print(data)
+            print(request.session['search_results'])
+            for result in request.session.get('search_results', []):
+                if result['item']['code'] == item_code:
+                    # Update the quantity or selling_price based on the field name
+                    if field_name == 'quantity':
+                        result['quantity'] = field_value
+                    elif field_name == 'price':
+                        result['item']['selling_price'] = field_value
+
+                    request.session.modified = True  # Mark session as modified to ensure changes are saved
+                    print(request.session['search_results'])
+                    return JsonResponse({'status': 'success'})
+
+                # If no matching item is found, return an error
+            return JsonResponse({'status': 'error', 'message': 'Item not found with code {}'.format(item_code)})
+
+        except json.JSONDecodeError:
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON data'})
+
+    return HttpResponseBadRequest('Invalid request method')
 
 
 def print_receipt(path):

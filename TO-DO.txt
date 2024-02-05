@@ -52,9 +52,13 @@ inf. Optimize the code. Especially the HTML. TEST ALL FUNCTIONALITIES. Go online
 #DONE# Fix the bug where sell price doesn't appear on the receipt.
 #DONE# Add the Invoice Number to the receipt
 #DONE# Add the Total Quantity to the receipt
+#OBSOLETE# make the back button go to the main page not just the previous page
+#OBSOLETE# Move the export to excel and export to pdf buttons next to each other
+#OBSOLETE# Implement Grafana for graphs and charts visualizations?
+#OBSOLETE# Find copyright free background pictures. Edit the tables, so they are easy to view and read with the background.
+[4] Create a cool dashboard!!!
 [0.5] Store documents in new folders according to their id and delete the folder when deleting the document.
-[0.5] Change the cashier & financials folder name to capital letters.
-[0.5] Find copyright free background pictures. Edit the tables, so they are easy to view and read with the background.
+[0.5] Change the Documents & Inventory folder names to small letters.
 [0.5] Change the icon from the static folder.
 [0.5] Create a new Model, customer for me where I store the customer data and add the customer CODE to user object.
 [1] Create a management tab in the homepage and put documents in it and an HR page.
@@ -63,20 +67,17 @@ inf. Optimize the code. Especially the HTML. TEST ALL FUNCTIONALITIES. Go online
 [1] Use different database for each user company code
 [1] Create a Subscription system to sell the software on a subscription basis.
 11. Upgrade the cybersecurity?
-12. Implement Grafana for graphs and charts visualizations?
 [0.5] Create Demo account with Demo DB.
 [0.5] Create a checklist of what needs to change for each customer like receipts, DBs, My demo user, maybe html files, etc...
 [3] Create a local version of the project. (Keep the subscription, find a way to renew it remotely, hide the source code, remove the superuser creation function and other cracking methodes...)
 [0.5] Export as PDF
 [1] filter balance sheet according to a Client!
-[[0.5] When adding graph.. Add a break even line!
+[0.5] When adding graph.. Add a break even line!
 [2] add import export to the balance sheet
 [4] migration apps for different accounting software
 [0.5] add a store location to the item and a location for cashier for when it is sold
 [1] User based permissions with warnings!
 [0.5] add supplier info to the rebuy list
-[0.5] make the back button go to the main page not just the previous page
 [1] implement a remote update for the software
 [0.5] Edit the export_transactions function to include everything in the transactions and look good
 [0.5] Edit the export to pdf to fetch the last created excel and convert it to pdf
-[0.5] Move the export to excel and export to pdf buttons next to each other

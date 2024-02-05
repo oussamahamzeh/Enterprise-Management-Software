@@ -64,10 +64,10 @@
             <th>Quantity</th>
         </tr>
         {% for result in results %}
-        <tr>
+        <tr data-row-id="{{ forloop.counter0 }}">
             <td>{{ result.item.name }}</td>
-            <td><input type="number" value="{{ result.item.selling_price }}" class="edit-field" data-field="price"></td>
-            <td><input type="number" value="{{ result.quantity }}" class="edit-field" data-field="quantity"></td>
+            <td><input type="number" value="{{ result.item.selling_price }}" class="edit-field" data-field="price" onchange="updateInputValue(this)"></td>
+            <td><input type="number" value="{{ result.quantity }}" class="edit-field" data-field="quantity" onchange="updateInputValue(this)"></td>
             <input type="hidden" value="{{ result.item.code }}" class="item-code">
         </tr>
         {% endfor %}
@@ -100,6 +100,75 @@
 </div>
 
 <script>
+
+function updateInputValue(inputField) {
+    var fieldName = inputField.getAttribute('data-field');
+    var rowId = inputField.closest('tr').getAttribute('data-row-id');
+    var itemCode = inputField.closest('tr').querySelector('.item-code').value;
+
+    // Ensure that the results array exists
+    if (!window.results) {
+        window.results = [];
+    }
+
+    // Ensure that the results array has an object for the corresponding row
+    if (!window.results[rowId]) {
+        window.results[rowId] = {};
+    }
+
+    // Update the value based on the field name
+    if (fieldName === 'quantity' || fieldName === 'price') {
+        window.results[rowId][fieldName] = parseFloat(inputField.value);  // Use parseFloat for selling_price
+    }
+
+    console.log("Updated results:", window.results);
+
+    // Using fetch to send data to Django view
+    fetch('{% url 'cashier:update_results' %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken'), // Make sure to include the CSRF token
+        },
+        body: JSON.stringify({
+            field: fieldName,
+            value: window.results[rowId][fieldName],
+            code: itemCode,
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Update successful:', data);
+        // Check if the update was successful and a redirect URL is provided
+        if (data.status === 'success' && data.redirect_url) {
+            // Redirect to the provided URL
+            window.location.href = data.redirect_url;
+        }
+    })
+    .catch(error => {
+        console.error('Update failed:', error);
+    });
+}
+
+// Function to get CSRF token from cookies
+function getCookie(name) {
+    var cookieValue = null;
+    if(document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for(var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            if(cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+
+
+
     function clearResults() {
         fetch('{% url 'cashier:clear_results' %}')
             .then(response => response.json())

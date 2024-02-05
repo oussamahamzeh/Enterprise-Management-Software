@@ -25,8 +25,8 @@ from django.urls import path, include
 from .views import password_reset_confirm_custom
 
 urlpatterns = [
-                  # path('', views.homepage, name='homepage'),
-                  path('', dashboard_view, name='dashboard_redirect'),  # Redirect from root to dashboard
+                  path('', views.homepage, name='homepage'),
+                  #path('', dashboard_view, name='dashboard_redirect'),  # Redirect from root to dashboard
                   path('admin/', custom_admin_site.urls),
                   path('inventory/', include('Inventory.urls', namespace='inventory')),  # items/
                   path('documents/', include('Documents.urls', namespace='documents')),  # documents/
