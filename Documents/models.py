@@ -54,7 +54,7 @@ class DocumentNumber(models.Model):
 
 
 class Document(models.Model):
-    document_id = models.IntegerField(primary_key=True, default=DocumentNumber.get_next_document_id)
+    document_id = models.IntegerField(primary_key=True, default=None, unique=True)
     title = models.CharField(max_length=255)
     file = models.FileField(upload_to=document_upload_to)
     created_at = models.DateTimeField(blank=True, null=True)
@@ -62,6 +62,9 @@ class Document(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True)
 
     def save(self, *args, **kwargs):
+        # Ensure document_id is set only if it's not already set
+        if self.document_id is None:
+            self.document_id = DocumentNumber.get_next_document_id()
         # Get the current datetime
         current_datetime = datetime.now()
 
@@ -71,7 +74,7 @@ class Document(models.Model):
         # Set the formatted datetime as the value for the field
         self.created_at = formatted_datetime
 
-        super().save(update_fields=['title', 'file', 'created_at', 'owner', 'category'], *args, **kwargs)
+        super().save(*args, **kwargs)
 
 
 @receiver(post_delete, sender=Document)

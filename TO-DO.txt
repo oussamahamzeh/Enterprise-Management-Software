@@ -57,9 +57,10 @@ inf. Optimize the code. Especially the HTML. TEST ALL FUNCTIONALITIES. Go online
 #OBSOLETE# Implement Grafana for graphs and charts visualizations?
 #OBSOLETE# Find copyright free background pictures. Edit the tables, so they are easy to view and read with the background.
 #DONE# Store documents in new folders according to their id and delete the folder when deleting the document.
+#DONE# Fix the double incrementation of the document id counter.
+Change the Documents & Inventory folder names to small letters?
+Upgrade the cybersecurity?
 [4] Create a cool dashboard!!!
-[0.5] Fix the double incrementation of the document id counter.
-[0.5] Change the Documents & Inventory folder names to small letters.
 [0.5] Change the icon from the static folder.
 [0.5] Create a new Model, customer for me where I store the customer data and add the customer CODE to user object.
 [1] Create a management tab in the homepage and put documents in it and an HR page.
@@ -67,7 +68,6 @@ inf. Optimize the code. Especially the HTML. TEST ALL FUNCTIONALITIES. Go online
 [1] Switch to MySQL
 [1] Use different database for each user company code
 [1] Create a Subscription system to sell the software on a subscription basis.
-11. Upgrade the cybersecurity?
 [0.5] Create Demo account with Demo DB.
 [0.5] Create a checklist of what needs to change for each customer like receipts, DBs, My demo user, maybe html files, etc...
 [3] Create a local version of the project. (Keep the subscription, find a way to renew it remotely, hide the source code, remove the superuser creation function and other cracking methodes...)
